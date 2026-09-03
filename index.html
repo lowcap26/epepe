@@ -54,7 +54,12 @@ nav .buy { color: var(--fire); }
   border-radius: .875rem;
   animation: heat 1.6s ease-in-out infinite;
 }
-.hero > img { display: block; width: 100%; height: auto; animation: flicker 1.1s ease-in-out infinite; }
+.hero > img, .hero > video { display: block; width: 100%; height: auto; }
+.hero-fallback { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .hero > video { display: none; }
+  .hero-fallback { display: block; }
+}
 .ember-layer { pointer-events: none; position: absolute; inset: 0; z-index: 15; overflow: hidden; }
 .ember {
   position: absolute;
@@ -252,7 +257,10 @@ footer { border-top: 1px solid var(--border); padding: 2rem 1.25rem; text-align:
         <span class="ember"></span><span class="ember"></span><span class="ember"></span><span class="ember"></span>
         <span class="ember"></span><span class="ember"></span>
       </div>
-      <img src="https://h.uguu.se/YmixZFTw.jpg" alt="Evil Pepe holding burning money bags and breathing fire"/>
+      <video autoplay muted loop playsinline poster="https://h.uguu.se/YmixZFTw.jpg">
+        <source src="https://n.uguu.se/JtMrBLNg.mp4" type="video/mp4"/>
+      </video>
+      <img src="https://h.uguu.se/YmixZFTw.jpg" alt="Evil Pepe holding burning money bags and breathing fire" class="hero-fallback"/>
       <span class="flame-lick"></span>
       <span class="flame-lick"></span>
       <span class="flame-lick"></span>
