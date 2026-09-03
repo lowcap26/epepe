@@ -4,6 +4,12 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>$EPEPE — Evil Pepe</title>
+<link rel="icon" href="https://i.imgur.com/sMtcXs4.jpeg" type="image/jpeg"/>
+<meta name="theme-color" content="#070403"/>
+<meta property="og:title" content="$EPEPE — Evil Pepe"/>
+<meta property="og:description" content="SUPPLY TO ASH. Sold bags get burned until the curve bonds."/>
+<meta property="og:image" content="https://i.imgur.com/iykfgdJ.jpeg"/>
+<meta name="twitter:card" content="summary_large_image"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
@@ -55,6 +61,11 @@ nav .buy { color: var(--fire); }
   animation: heat 1.6s ease-in-out infinite;
 }
 .hero > img, .hero > video { display: block; width: 100%; height: auto; }
+.hero-still { animation: flicker 1.1s ease-in-out infinite; }
+.hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-video { display: none; }
+}
 .ember-layer { pointer-events: none; position: absolute; inset: 0; z-index: 15; overflow: hidden; }
 .ember {
   position: absolute;
@@ -234,7 +245,7 @@ footer { border-top: 1px solid var(--border); padding: 2rem 1.25rem; text-align:
   <div class="inner">
     <header>
       <a class="brand" href="https://pump.tires/token/0xf646e3d650795ec693960f874b906a1b8db91c76">
-        <img src="https://litter.catbox.moe/v1094e.jpg" alt="Evil Pepe"/>
+        <img src="https://i.imgur.com/sMtcXs4.jpeg" alt="Evil Pepe"/>
         $<span>EPEPE</span>
       </a>
       <nav>
@@ -252,7 +263,10 @@ footer { border-top: 1px solid var(--border); padding: 2rem 1.25rem; text-align:
         <span class="ember"></span><span class="ember"></span><span class="ember"></span><span class="ember"></span>
         <span class="ember"></span><span class="ember"></span>
       </div>
-      <img src="https://litter.catbox.moe/q1pff5.jpg" alt="Evil Pepe holding burning money bags and breathing fire"/>
+      <img class="hero-still" src="https://i.imgur.com/iykfgdJ.jpeg" alt="Evil Pepe holding burning money bags and breathing fire"/>
+      <video class="hero-video" autoplay muted loop playsinline poster="https://i.imgur.com/iykfgdJ.jpeg">
+        <source src="https://i.imgur.com/Ool6t7z.mp4" type="video/mp4"/>
+      </video>
       <span class="flame-lick"></span>
       <span class="flame-lick"></span>
       <span class="flame-lick"></span>
@@ -262,7 +276,7 @@ footer { border-top: 1px solid var(--border); padding: 2rem 1.25rem; text-align:
     <div class="copy">
       <p class="kicker">PulseChain · pump.tires</p>
       <h1>EVIL PEPE<em>SUPPLY TO ASH</em></h1>
-      <p class="blurb">Evil Pepe. Horns on. Sold bags get burned until the curve bonds. Isn’t it a little evil to torch supply like that? Yeah. That’s the point.</p>
+      <p class="blurb">Evil Pepe. Horns on. Sold bags get burned until the curve bonds. Isn't it a little evil to torch supply like that? Yeah. That's the point.</p>
     </div>
 
     <dl class="stats">
