@@ -5,22 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <title>$EPEPE</title>
 <link rel="icon" href="https://h.uguu.se/TvqnFXvY.png"/>
+<meta property="og:title" content="$EPEPE"/>
+<meta property="og:image" content="https://h.uguu.se/TvqnFXvY.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://h.uguu.se/TvqnFXvY.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Staatliches&display=swap" rel="stylesheet"/>
 <style>
 * { box-sizing: border-box; }
-html, body {
-  margin: 0;
-  background: #070101;
-  color: #ffe7d2;
-  font-family: Staatliches, Impact, sans-serif;
-}
+html, body { margin: 0; background: #070101; color: #ffe7d2; font-family: Staatliches, Impact, sans-serif; }
 body::before {
-  content: "";
-  position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background:
-    radial-gradient(circle at 50% -10%, rgba(255,70,0,.35), transparent 42%),
-    radial-gradient(circle at 80% 100%, rgba(255,40,0,.18), transparent 40%);
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: radial-gradient(circle at 50% -10%, rgba(255,70,0,.35), transparent 42%), radial-gradient(circle at 80% 100%, rgba(255,40,0,.18), transparent 40%);
 }
 .wrap { position: relative; z-index: 1; }
 .top { padding: 16px 12px 8px; text-align: center; }
@@ -28,33 +24,22 @@ h1 {
   margin: 4px 0 8px;
   font-family: Bangers, Impact, sans-serif;
   font-size: clamp(64px, 18vw, 108px);
-  letter-spacing: 3px;
-  line-height: .85;
-  text-shadow: 0 0 18px #ff2a00, 0 4px 0 #5a0000;
+  letter-spacing: 3px; line-height: .85; color: #fff;
+  text-shadow: 0 0 8px #fff, 0 0 22px #fff, 0 0 42px #ff7a3a, 0 0 70px #ff2a00;
 }
-h1 b { color: #ff2d12; }
 .tag { color: #ffb020; letter-spacing: .28em; font-size: 13px; }
 .btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 12px 0; }
 a, button {
   appearance: none; background: #2a0a06; color: #fff;
   border: 2px solid #ff3b14; border-radius: 12px; padding: 11px 16px;
   font-family: Bangers, Impact, sans-serif; font-size: 20px; letter-spacing: 1px;
-  text-decoration: none; cursor: pointer;
-  box-shadow: 0 0 16px rgba(255,50,0,.25);
+  text-decoration: none; cursor: pointer; box-shadow: 0 0 16px rgba(255,50,0,.25);
 }
 a.buy, button.buy { background: linear-gradient(#ff4a16, #b50d00); }
 .ca { margin: 6px 12px 0; text-align: center; color: #c48a72; font-size: 12px; word-break: break-all; font-family: Arial, sans-serif; }
 .stage { position: relative; width: min(460px, 94vw); aspect-ratio: 1; margin: 4px auto 0; }
-.glow {
-  position: absolute; inset: 4% -8% 8% 10%;
-  background: radial-gradient(circle at 72% 52%, rgba(255,90,10,.7), transparent 60%);
-  filter: blur(16px); animation: heat .8s ease-in-out infinite; pointer-events: none;
-}
-.pepe {
-  position: relative; z-index: 2; width: 100%; height: 100%; object-fit: contain;
-  transform-origin: 38% 58%; animation: breathe .9s ease-in-out infinite;
-  filter: drop-shadow(0 0 18px rgba(255,70,0,.55));
-}
+.glow { position: absolute; inset: 4% -8% 8% 10%; background: radial-gradient(circle at 72% 52%, rgba(255,90,10,.7), transparent 60%); filter: blur(16px); animation: heat .8s ease-in-out infinite; pointer-events: none; }
+.pepe { position: relative; z-index: 2; width: 100%; height: 100%; object-fit: contain; transform-origin: 38% 58%; animation: breathe .9s ease-in-out infinite; filter: drop-shadow(0 0 18px rgba(255,70,0,.55)); }
 .embers { position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
 .ember { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #ffb020; box-shadow: 0 0 10px #ff4a12; left: 68%; top: 52%; animation: spark 1.1s linear infinite; }
 .ember:nth-child(2) { left: 74%; animation-delay: .15s; }
@@ -67,11 +52,7 @@ a.buy, button.buy { background: linear-gradient(#ff4a16, #b50d00); }
 @keyframes breathe { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-6px) scale(1.04); } }
 @keyframes heat { 0%,100% { opacity: .5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.12); } }
 @keyframes spark { 0% { transform: translate(0,0) scale(1); opacity: 0; } 12% { opacity: 1; } 100% { transform: translate(36px,-90px) scale(.15); opacity: 0; } }
-.hud {
-  display: flex; justify-content: space-between; gap: 8px;
-  padding: 8px 12px; font-size: 20px; letter-spacing: 1px;
-  text-shadow: 0 0 8px #ff2a00;
-}
+.hud { display: flex; justify-content: space-between; gap: 8px; padding: 8px 12px; font-size: 20px; letter-spacing: 1px; text-shadow: 0 0 8px #ff2a00; }
 canvas#game { width: 100%; height: auto; display: block; background: #0d0202; touch-action: none; border-top: 3px solid #ff3b14; border-bottom: 3px solid #ff3b14; }
 .hint { text-align: center; color: #ffb59a; font-size: 16px; padding: 10px 14px 4px; letter-spacing: .04em; }
 .info { max-width: 560px; margin: 10px auto 48px; padding: 0 16px; }
@@ -89,7 +70,7 @@ canvas#game { width: 100%; height: auto; display: block; background: #0d0202; to
     <img class="pepe" src="https://h.uguu.se/TvqnFXvY.png" alt="$EPEPE"/>
     <div class="embers"><span class="ember"></span><span class="ember"></span><span class="ember"></span><span class="ember"></span><span class="ember"></span><span class="ember"></span><span class="ember"></span><span class="ember"></span></div>
   </div>
-  <h1>$EPE<b>PE</b></h1>
+  <h1>$EPEPE</h1>
   <div class="btns">
     <a class="buy" href="https://pulsex.exchange/#/swap?outputCurrency=0xf646e3d650795ec693960f874b906a1b8db91c76" target="_blank" rel="noreferrer">BUY</a>
     <a href="https://dexscreener.com/pulsechain/0x5627b7ea910e292b565f7f31824bc9018c1a804d" target="_blank" rel="noreferrer">CHART</a>
@@ -127,7 +108,8 @@ canvas#game { width: 100%; height: auto; display: block; background: #0d0202; to
 <script>
 var CA = "0xf646e3d650795ec693960f874b906a1b8db91c76";
 var PEPE = "https://h.uguu.se/TvqnFXvY.png";
-var frogImg = new Image(); frogImg.crossOrigin = "anonymous"; frogImg.src = PEPE;
+var frogImg = new Image();
+frogImg.src = PEPE;
 document.getElementById("copy").onclick = function () {
   if (navigator.clipboard) navigator.clipboard.writeText(CA);
   this.textContent = "COPIED";
@@ -140,8 +122,8 @@ function scoreCard() {
   var glow = g.createRadialGradient(780, 340, 40, 780, 340, 420);
   glow.addColorStop(0, "rgba(255,60,0,.55)"); glow.addColorStop(1, "rgba(0,0,0,0)");
   g.fillStyle = glow; g.fillRect(0, 0, 1200, 675);
-  if (frogImg.complete && frogImg.naturalWidth) g.drawImage(frogImg, 620, 70, 520, 520);
-  g.fillStyle = "#ffb020"; g.font = "28px Staatliches, Impact, sans-serif"; g.fillText("$EPEPE", 70, 90);
+  try { if (frogImg.complete && frogImg.naturalWidth) g.drawImage(frogImg, 620, 70, 520, 520); } catch (e) {}
+  g.fillStyle = "#fff"; g.font = "28px Staatliches, Impact, sans-serif"; g.fillText("$EPEPE", 70, 90);
   g.fillStyle = "#ff3b14"; g.font = "70px Bangers, Impact, sans-serif"; g.fillText("BURNED", 70, 250);
   g.fillStyle = "#fff"; g.font = "140px Bangers, Impact, sans-serif"; g.fillText(String(score), 70, 400);
   g.fillStyle = "#ffd7c4"; g.font = "32px Staatliches, Impact, sans-serif"; g.fillText("BAGS TORCHED", 70, 460);
@@ -156,6 +138,7 @@ function downloadCard(blob) {
 }
 document.getElementById("share").onclick = async function () {
   var blob = await new Promise(function (res) { scoreCard().toBlob(res, "image/png"); });
+  if (!blob) return;
   var file = new File([blob], "epepe-score.png", { type: "image/png" });
   var text = "$EPEPE BURNED " + score;
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -166,7 +149,7 @@ document.getElementById("share").onclick = async function () {
 };
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
-var W = 430, H = 640, frog = { x: 100, y: 320 }, bags = [], sparks = [], flames = [];
+var W = 430, H = 640, frog = { x: 100, y: 320 }, bags = [], sparks = [];
 var score = 0, lives = 3, best = Number(localStorage.getItem("epepeBest") || 0);
 var dragging = false, tick = 0, state = "ready", hurt = 0;
 document.getElementById("best").textContent = best;
@@ -188,7 +171,7 @@ function moveFrog(p) {
   frog.y = Math.max(H * 0.14, Math.min(H * 0.86, p.y));
 }
 function start() {
-  state = "play"; score = 0; lives = 3; bags = []; sparks = []; flames = []; tick = 0; hurt = 0;
+  state = "play"; score = 0; lives = 3; bags = []; sparks = []; tick = 0; hurt = 0;
   document.getElementById("score").textContent = 0;
   document.getElementById("lives").textContent = 3;
 }
