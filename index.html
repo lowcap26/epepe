@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <title>$EPEPE</title>
 <link rel="icon" href="https://h.uguu.se/TvqnFXvY.png"/>
-<meta property="og:title" content="$EPEPE"/>
-<meta property="og:description" content="Dead bags don't come back. Follow @evilpepelol"/>
+<meta property="og:title" content="$EPEPE — Dead bags don't come back"/>
+<meta property="og:description" content="Bonded on PulseX. Sold bags get burned. Dead bags don't come back. @evilpepelol"/>
 <meta property="og:image" content="https://h.uguu.se/TvqnFXvY.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:site" content="@evilpepelol"/>
@@ -32,6 +32,8 @@ h1 {
   text-shadow: 0 3px 0 #1a0000, 0 0 14px rgba(255,70,20,.4);
 }
 .tag { color: #ffb020; letter-spacing: .28em; font-size: 13px; }
+.status { color: #fff; letter-spacing: .18em; font-size: 14px; margin-top: 6px; }
+.pair { margin: 4px 12px 10px; text-align: center; color: #8a5a48; font-size: 11px; word-break: break-all; font-family: Arial, sans-serif; }
 .btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 12px 0; }
 a, button {
   appearance: none; background: #2a0a06; color: #fff;
@@ -69,6 +71,7 @@ canvas#game { width: 100%; height: auto; display: block; background: #0d0202; to
 <div class="wrap">
 <div class="top">
   <div class="tag">DEAD BAGS DON’T COME BACK</div>
+  <div class="status">BONDED · LIVE ON PULSEX</div>
   <div class="stage">
     <div class="glow"></div>
     <img class="pepe" src="https://h.uguu.se/TvqnFXvY.png" alt="$EPEPE"/>
@@ -81,8 +84,10 @@ canvas#game { width: 100%; height: auto; display: block; background: #0d0202; to
     <a href="https://x.com/evilpepelol" target="_blank" rel="noreferrer">X</a>
     <a href="https://t.me/evilpepelol" target="_blank" rel="noreferrer">TELEGRAM</a>
     <button id="copy" type="button">COPY CA</button>
+    <button id="copypair" type="button">COPY PAIR</button>
   </div>
-  <div class="ca">0xf646e3d650795ec693960f874b906a1b8db91c76</div>
+  <div class="ca">TOKEN 0xf646e3d650795ec693960f874b906a1b8db91c76</div>
+  <div class="pair">PAIR 0x5627b7ea910e292b565f7f31824bc9018c1a804d</div>
 </div>
 <div class="hud">
   <span>BURNED <span id="score">0</span></span>
@@ -95,22 +100,31 @@ canvas#game { width: 100%; height: auto; display: block; background: #0d0202; to
 <div class="info">
   <h2>LORE</h2>
   <p>Evil Pepe. Horns on. He doesn’t talk. He burns.</p>
-  <p>Sold bags got torched on the way up. What’s gone is gone. Now he’s live on PulseX. Same frog. Same fire.</p>
+  <p>Sold bags got torched on the way up. What’s gone is gone.</p>
+  <p>Bonded. Live on PulseX. Same frog. Same fire. Dead bags don’t come back.</p>
   <h2>TOKENOMICS</h2>
   <ul>
-    <li>PulseChain</li>
+    <li>PulseChain · PulseX</li>
     <li>1,000,000,000 original supply</li>
-    <li>0 tax</li>
+    <li>0 tax · no team bag</li>
     <li>Fair launch on pump.tires</li>
-    <li>Bonded / live on PulseX</li>
-    <li>LP locked</li>
-    <li>Ownership renounced</li>
-    <li>Dumped bags burned before bond</li>
+    <li>Bonded. Chart is live.</li>
+    <li>LP locked · ownership renounced</li>
+    <li>Curve dumps were burned. They do not recycle.</li>
+    <li>After bond, burns are manual. Same fire.</li>
   </ul>
+  <h2>TRADE</h2>
+  <p>Buy on PulseX. Chart on DexScreener. That’s the whole map.</p>
+  <p class="ca" style="color:#c48a72;">TOKEN 0xf646e3d650795ec693960f874b906a1b8db91c76</p>
+  <p class="ca" style="color:#8a5a48;">PAIR 0x5627b7ea910e292b565f7f31824bc9018c1a804d</p>
+  <h2>BURNS</h2>
+  <p>Send supply to the Pulse dead address. Post the tx. That’s the ritual.</p>
+  <p class="ca" style="color:#ffb020;">0x0000000000000000000000000000000000000369</p>
 </div>
 </div>
 <script>
 var CA = "0xf646e3d650795ec693960f874b906a1b8db91c76";
+var PAIR = "0x5627b7ea910e292b565f7f31824bc9018c1a804d";
 var X_URL = "https://x.com/evilpepelol";
 var PEPE = "https://images.weserv.nl/?url=h.uguu.se/TvqnFXvY.png";
 var frogImg = new Image();
@@ -120,6 +134,10 @@ var hero = document.querySelector("img.pepe"); if (hero) hero.src = PEPE;
 document.getElementById("copy").onclick = function () {
   if (navigator.clipboard) navigator.clipboard.writeText(CA);
   this.textContent = "COPIED";
+};
+document.getElementById("copypair").onclick = function () {
+  if (navigator.clipboard) navigator.clipboard.writeText(PAIR);
+  this.textContent = "PAIR COPIED";
 };
 function scoreCard() {
   var c = document.createElement("canvas");
