@@ -65,7 +65,7 @@ canvas#game { width: 100%; height: auto; display: block; background: #0d0202; to
 <body>
 <div class="wrap">
 <div class="top">
-  <div class="tag">HE SCREAMS · SUPPLY BURNS</div>
+  <div class="tag">DEAD BAGS DON’T COME BACK</div>
   <div class="stage">
     <div class="glow"></div>
     <img class="pepe" src="https://h.uguu.se/TvqnFXvY.png" alt="$EPEPE"/>
@@ -120,33 +120,49 @@ function scoreCard() {
   c.width = 1200; c.height = 675;
   var g = c.getContext("2d");
   g.fillStyle = "#080000"; g.fillRect(0, 0, 1200, 675);
-  var glow = g.createRadialGradient(780, 340, 40, 780, 340, 420);
-  glow.addColorStop(0, "rgba(255,60,0,.55)"); glow.addColorStop(1, "rgba(0,0,0,0)");
+  var glow = g.createRadialGradient(900, 330, 20, 900, 330, 380);
+  glow.addColorStop(0, "rgba(255,70,0,.5)"); glow.addColorStop(1, "rgba(0,0,0,0)");
   g.fillStyle = glow; g.fillRect(0, 0, 1200, 675);
-  try { if (frogImg.complete && frogImg.naturalWidth) g.drawImage(frogImg, 620, 70, 520, 520); } catch (e) {}
-  g.fillStyle = "#fff"; g.font = "28px Staatliches, Impact, sans-serif"; g.fillText("$EPEPE", 70, 90);
-  g.fillStyle = "#ff3b14"; g.font = "70px Bangers, Impact, sans-serif"; g.fillText("BURNED", 70, 250);
-  g.fillStyle = "#fff"; g.font = "140px Bangers, Impact, sans-serif"; g.fillText(String(score), 70, 400);
-  g.fillStyle = "#ffd7c4"; g.font = "32px Staatliches, Impact, sans-serif"; g.fillText("BAGS TORCHED", 70, 460);
-  g.fillStyle = "#c48a72"; g.font = "24px Staatliches, Impact, sans-serif"; g.fillText("evilpepe.lol", 70, 620);
+  g.fillStyle = "#2f8a3a"; g.beginPath(); g.ellipse(930, 340, 150, 138, 0, 0, Math.PI * 2); g.fill();
+  g.fillStyle = "#c62828";
+  g.beginPath(); g.moveTo(840, 230); g.lineTo(860, 165); g.lineTo(890, 240); g.fill();
+  g.beginPath(); g.moveTo(980, 235); g.lineTo(1015, 165); g.lineTo(1035, 245); g.fill();
+  g.fillStyle = "#fff"; g.beginPath(); g.arc(880, 320, 28, 0, Math.PI * 2); g.fill(); g.beginPath(); g.arc(980, 320, 28, 0, Math.PI * 2); g.fill();
+  g.fillStyle = "#111"; g.beginPath(); g.arc(890, 325, 10, 0, Math.PI * 2); g.fill(); g.beginPath(); g.arc(990, 325, 10, 0, Math.PI * 2); g.fill();
+  g.fillStyle = "#fff"; g.font = "32px Staatliches, Impact, sans-serif"; g.fillText("$EPEPE", 70, 90);
+  g.fillStyle = "#ff3b14"; g.font = "64px Bangers, Impact, sans-serif"; g.fillText("BURNED", 70, 240);
+  g.fillStyle = "#fff"; g.font = "150px Bangers, Impact, sans-serif"; g.fillText(String(score), 70, 400);
+  g.fillStyle = "#ffb020"; g.font = "30px Staatliches, Impact, sans-serif"; g.fillText("DEAD BAGS DON’T COME BACK", 70, 470);
   return c;
 }
-function downloadCard(blob) {
-  var a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "epepe-score-" + score + ".png";
-  document.body.appendChild(a); a.click(); a.remove();
+function tweetText() {
+  return "$EPEPE burned " + score + " bags. Dead bags don’t come back.";
 }
 document.getElementById("share").onclick = async function () {
-  var blob = await new Promise(function (res) { scoreCard().toBlob(res, "image/png"); });
-  if (!blob) return;
-  var file = new File([blob], "epepe-score.png", { type: "image/png" });
-  var text = "$EPEPE BURNED " + score;
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    try { await navigator.share({ files: [file], text: text, title: text }); return; } catch (e) {}
-  }
-  downloadCard(blob);
-  this.textContent = "IMAGE SAVED — POST THAT";
+  var btn = this;
+  var text = tweetText();
+  try {
+    var blob = await new Promise(function (res, rej) {
+      try {
+        scoreCard().toBlob(function (b) { b ? res(b) : rej(new Error("blob")); }, "image/png");
+      } catch (err) { rej(err); }
+    });
+    var file = new File([blob], "epepe-score.png", { type: "image/png" });
+    if (navigator.share) {
+      try {
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], text: text, title: "$EPEPE" });
+          return;
+        }
+        await navigator.share({ text: text, title: "$EPEPE" });
+        return;
+      } catch (err) {
+        if (err && err.name === "AbortError") return;
+      }
+    }
+  } catch (err) {}
+  window.open("https://x.com/intent/tweet?text=" + encodeURIComponent(text), "_blank", "noopener");
+  btn.textContent = "POST OPENED";
 };
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
