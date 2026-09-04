@@ -11,7 +11,7 @@
 * { box-sizing: border-box; }
 html, body {
   margin: 0;
-  background: #070101 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpath d='M10 70 Q20 20 30 70' stroke='%23180804' fill='none' stroke-width='3'/%3E%3C/svg%3E");
+  background: #070101;
   color: #ffe7d2;
   font-family: Staatliches, Impact, sans-serif;
 }
@@ -33,9 +33,7 @@ h1 {
   text-shadow: 0 0 18px #ff2a00, 0 4px 0 #5a0000;
 }
 h1 b { color: #ff2d12; }
-.tag {
-  color: #ffb020; letter-spacing: .28em; font-size: 13px;
-}
+.tag { color: #ffb020; letter-spacing: .28em; font-size: 13px; }
 .btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 12px 0; }
 a, button {
   appearance: none; background: #2a0a06; color: #fff;
@@ -74,7 +72,7 @@ a.buy, button.buy { background: linear-gradient(#ff4a16, #b50d00); }
   padding: 8px 12px; font-size: 20px; letter-spacing: 1px;
   text-shadow: 0 0 8px #ff2a00;
 }
-canvas { width: 100%; height: auto; display: block; background: #0d0202; touch-action: none; border-top: 3px solid #ff3b14; border-bottom: 3px solid #ff3b14; }
+canvas#game { width: 100%; height: auto; display: block; background: #0d0202; touch-action: none; border-top: 3px solid #ff3b14; border-bottom: 3px solid #ff3b14; }
 .hint { text-align: center; color: #ffb59a; font-size: 16px; padding: 10px 14px 4px; letter-spacing: .04em; }
 .info { max-width: 560px; margin: 10px auto 48px; padding: 0 16px; }
 .info h2 { font-family: Bangers, Impact, sans-serif; font-size: 36px; margin: 26px 0 8px; color: #ff3b14; text-shadow: 0 0 10px #ff2a00; }
@@ -129,16 +127,45 @@ canvas { width: 100%; height: auto; display: block; background: #0d0202; touch-a
 <script>
 var CA = "0xf646e3d650795ec693960f874b906a1b8db91c76";
 var PEPE = "https://h.uguu.se/TvqnFXvY.png";
+var frogImg = new Image(); frogImg.crossOrigin = "anonymous"; frogImg.src = PEPE;
 document.getElementById("copy").onclick = function () {
   if (navigator.clipboard) navigator.clipboard.writeText(CA);
   this.textContent = "COPIED";
 };
-document.getElementById("share").onclick = function () {
-  window.open("https://x.com/intent/tweet?text=" + encodeURIComponent("$EPEPE burned " + score + " bags. 3 dumps and you’re done. evilpepe.lol"), "_blank");
+function scoreCard() {
+  var c = document.createElement("canvas");
+  c.width = 1200; c.height = 675;
+  var g = c.getContext("2d");
+  g.fillStyle = "#080000"; g.fillRect(0, 0, 1200, 675);
+  var glow = g.createRadialGradient(780, 340, 40, 780, 340, 420);
+  glow.addColorStop(0, "rgba(255,60,0,.55)"); glow.addColorStop(1, "rgba(0,0,0,0)");
+  g.fillStyle = glow; g.fillRect(0, 0, 1200, 675);
+  if (frogImg.complete && frogImg.naturalWidth) g.drawImage(frogImg, 620, 70, 520, 520);
+  g.fillStyle = "#ffb020"; g.font = "28px Staatliches, Impact, sans-serif"; g.fillText("$EPEPE", 70, 90);
+  g.fillStyle = "#ff3b14"; g.font = "70px Bangers, Impact, sans-serif"; g.fillText("BURNED", 70, 250);
+  g.fillStyle = "#fff"; g.font = "140px Bangers, Impact, sans-serif"; g.fillText(String(score), 70, 400);
+  g.fillStyle = "#ffd7c4"; g.font = "32px Staatliches, Impact, sans-serif"; g.fillText("BAGS TORCHED", 70, 460);
+  g.fillStyle = "#c48a72"; g.font = "24px Staatliches, Impact, sans-serif"; g.fillText("evilpepe.lol", 70, 620);
+  return c;
+}
+function downloadCard(blob) {
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "epepe-score-" + score + ".png";
+  document.body.appendChild(a); a.click(); a.remove();
+}
+document.getElementById("share").onclick = async function () {
+  var blob = await new Promise(function (res) { scoreCard().toBlob(res, "image/png"); });
+  var file = new File([blob], "epepe-score.png", { type: "image/png" });
+  var text = "$EPEPE BURNED " + score;
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], text: text, title: text }); return; } catch (e) {}
+  }
+  downloadCard(blob);
+  this.textContent = "IMAGE SAVED — POST THAT";
 };
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
-var frogImg = new Image(); frogImg.src = PEPE;
 var W = 430, H = 640, frog = { x: 100, y: 320 }, bags = [], sparks = [], flames = [];
 var score = 0, lives = 3, best = Number(localStorage.getItem("epepeBest") || 0);
 var dragging = false, tick = 0, state = "ready", hurt = 0;
@@ -196,26 +223,16 @@ function drawBag(b) {
 function loop() {
   tick++; if (hurt > 0) hurt--;
   ctx.fillStyle = hurt ? "#3a0808" : "#140303"; ctx.fillRect(0, 0, W, H);
-  for (var i = 0; i < 18; i++) {
-    ctx.fillStyle = "rgba(255," + (40 + i * 8) + ",0,.08)";
-    ctx.fillRect((tick * 2 + i * 70) % W, H - 20 - (i * 13 % 80), 3, 16);
-  }
   ctx.fillStyle = "#2a0c08"; ctx.fillRect(0, H * 0.91, W, H * 0.09);
   ctx.fillStyle = "#ff3b14"; ctx.fillRect(0, H * 0.91, W, 4);
-
   var mouthX = frog.x + W * 0.1, mouthY = frog.y + H * 0.02;
   var fireW = W * 0.66, fireH = H * 0.075 + Math.sin(tick / 3) * 6;
   if (state === "play") {
     if (tick % Math.max(18, 42 - Math.floor(score / 2800)) === 0) spawn();
-    flames.push({ x: mouthX, y: mouthY + Math.sin(tick / 2) * 8, w: fireW * 0.25, life: 10 });
-    var g = ctx.createLinearGradient(mouthX, mouthY, mouthX + fireW, mouthY);
-    g.addColorStop(0, "rgba(255,245,140,1)"); g.addColorStop(.28, "rgba(255,90,10,.95)"); g.addColorStop(1, "rgba(255,20,0,0)");
-    ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(mouthX + fireW * 0.4, mouthY, fireW * 0.42, fireH, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "rgba(255,220,80,.8)"; ctx.beginPath(); ctx.ellipse(mouthX + fireW * 0.18, mouthY, fireW * 0.16, fireH * 0.45, 0, 0, Math.PI * 2); ctx.fill();
+    var gr = ctx.createLinearGradient(mouthX, mouthY, mouthX + fireW, mouthY);
+    gr.addColorStop(0, "rgba(255,245,140,1)"); gr.addColorStop(.28, "rgba(255,90,10,.95)"); gr.addColorStop(1, "rgba(255,20,0,0)");
+    ctx.fillStyle = gr; ctx.beginPath(); ctx.ellipse(mouthX + fireW * 0.4, mouthY, fireW * 0.42, fireH, 0, 0, Math.PI * 2); ctx.fill();
   }
-  flames.forEach(function (f) { f.x += 16; f.life--; ctx.fillStyle = "rgba(255,80,0," + (f.life / 14) + ")"; ctx.beginPath(); ctx.arc(f.x, f.y, 10, 0, Math.PI * 2); ctx.fill(); });
-  flames = flames.filter(function (f) { return f.life > 0; });
-
   bags.forEach(function (b) { if (state === "play") b.x -= b.v; drawBag(b); });
   var keep = [];
   bags.forEach(function (b) {
@@ -239,7 +256,6 @@ function loop() {
     ctx.beginPath(); ctx.arc(s.x, s.y, 5, 0, Math.PI * 2); ctx.fill();
   });
   sparks = sparks.filter(function (s) { return s.life > 0; });
-
   var size = W * 0.32;
   if (frogImg.complete && frogImg.naturalWidth) ctx.drawImage(frogImg, frog.x - size * 0.48, frog.y - size * 0.52, size, size);
   ctx.textAlign = "center"; ctx.fillStyle = "#ffe7a0";
