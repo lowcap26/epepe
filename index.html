@@ -3,229 +3,87 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>$EPEPE — BONDED</title>
-<meta name="description" content="$EPEPE bonded. Live on PulseX. He screams, supply burns."/>
-<meta property="og:title" content="$EPEPE — BONDED"/>
-<meta property="og:description" content="Curve dead. LP live on PulseX. It's biblical."/>
+<title>$EPEPE</title>
 <meta property="og:image" content="https://i.imgur.com/sMtcXs4.jpeg"/>
 <link rel="icon" href="https://i.imgur.com/sMtcXs4.jpeg"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --bg: #070403;
-  --surface: #140e0b;
-  --fg: #f6efe6;
-  --muted: #a89a8c;
-  --fire: #ff5a00;
-  --ember: #ffb020;
-  --acid: #3db54a;
-  --blood: #d40f00;
-  --border: #3a2418;
-}
-* { box-sizing: border-box; }
-html, body { margin: 0; background: var(--bg); color: var(--fg); font-family: Inter, system-ui, sans-serif; }
-a { color: inherit; text-decoration: none; }
-button { font: inherit; cursor: pointer; }
-.wrap { position: relative; min-height: 100dvh; }
-.glow { pointer-events: none; position: fixed; inset: 0; background: radial-gradient(ellipse at top, rgba(255,90,0,.18), transparent 55%); }
-.inner { position: relative; z-index: 1; max-width: 64rem; margin: 0 auto; padding: 0 1.25rem; }
-header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 0; }
-.brand { display: flex; align-items: center; gap: .75rem; font-family: "Bebas Neue", Impact, sans-serif; font-size: 1.5rem; letter-spacing: .04em; }
-.brand img { width: 2.5rem; height: 2.5rem; border-radius: 999px; object-fit: cover; }
-.brand span { color: var(--fire); }
-nav { display: none; gap: 1.5rem; font-size: .875rem; font-weight: 600; color: var(--muted); }
-nav a:hover { color: var(--fg); }
-nav .buy { color: var(--fire); }
-@media (min-width: 640px) { nav { display: flex; } }
-.hero { position: relative; max-width: 36rem; margin: 0 auto; overflow: hidden; border-radius: .875rem; animation: heat 1.6s ease-in-out infinite; }
-.hero > video, .hero > img { display: block; width: 100%; height: auto; }
-.badge { position: absolute; top: .75rem; left: .75rem; z-index: 21; background: var(--fire); color: #fff; font-size: .7rem; font-weight: 800; letter-spacing: .12em; padding: .35rem .6rem; border-radius: 999px; }
-.ember-layer { pointer-events: none; position: absolute; inset: 0; z-index: 15; overflow: hidden; }
-.ember { position: absolute; bottom: 12%; width: 6px; height: 6px; border-radius: 999px; background: var(--ember); box-shadow: 0 0 8px var(--fire); animation: ember-up 2.4s linear infinite; }
-.ember:nth-child(odd) { background: var(--fire); }
-.ember:nth-child(1) { left: 12%; } .ember:nth-child(2) { left: 22%; animation-delay: .4s; } .ember:nth-child(3) { left: 31%; animation-delay: .8s; }
-.ember:nth-child(4) { left: 40%; animation-delay: .2s; } .ember:nth-child(5) { left: 48%; animation-delay: 1.1s; } .ember:nth-child(6) { left: 55%; animation-delay: .6s; }
-.ember:nth-child(7) { left: 63%; animation-delay: 1.4s; } .ember:nth-child(8) { left: 72%; animation-delay: .3s; } .ember:nth-child(9) { left: 80%; animation-delay: .9s; }
-.copy { max-width: 42rem; margin: 2rem auto 0; text-align: center; }
-.kicker { font-size: .75rem; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--ember); }
-h1 { font-family: "Bebas Neue", Impact, sans-serif; font-size: clamp(3.5rem, 10vw, 6rem); line-height: .9; margin: .5rem 0 0; font-weight: 400; }
-h1 em { display: block; font-style: normal; color: var(--fire); }
-.blurb { max-width: 36rem; margin: 1rem auto 0; color: var(--muted); line-height: 1.6; }
-h2 { font-family: "Bebas Neue", Impact, sans-serif; font-size: 2.25rem; font-weight: 400; margin: 0; }
-.stats { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 2.5rem; }
-@media (min-width: 640px) { .stats { grid-template-columns: repeat(4, 1fr); } }
-.card, .stat { background: var(--surface); border: 1px solid var(--border); border-radius: .875rem; padding: 1.1rem 1.15rem; }
-.stat dt { font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.stat dd { font-family: "Bebas Neue", Impact, sans-serif; font-size: 1.875rem; margin: .25rem 0 0; }
-.actions { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; margin-top: 2rem; }
-.btn { display: inline-flex; align-items: center; min-height: 2.75rem; padding: .75rem 1.5rem; border-radius: 999px; font-size: .875rem; font-weight: 800; background: var(--fire); color: var(--fg); border: 0; }
-.btn.ghost { background: transparent; border: 1px solid var(--border); }
-.ca { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin: 1.5rem 0 2rem; padding: .75rem 1rem; border: 1px dashed var(--border); border-radius: .875rem; background: var(--surface); font-size: .8rem; }
-.ca span { color: var(--muted); }
-.ca code { flex: 1; min-width: 0; word-break: break-all; }
-.ca button { min-height: 2.75rem; border: 0; border-radius: 999px; padding: 0 1rem; background: var(--bg); color: var(--fg); font-size: .75rem; font-weight: 800; }
-.grid2 { display: grid; gap: .75rem; margin: 1.5rem 0 3rem; }
-@media (min-width: 640px) { .grid2 { grid-template-columns: 1fr 1fr; } }
-.card h3 { margin: 0; font-size: .875rem; }
-.card p { margin: .5rem 0 0; color: var(--muted); font-size: .875rem; line-height: 1.6; }
-.game-box { background: var(--surface); border: 1px solid var(--border); border-radius: .875rem; padding: 1rem; margin: 1.25rem 0 4rem; }
-.game-box p { color: var(--muted); font-size: .875rem; }
-canvas { width: 100%; height: auto; display: block; background: #050202; border-radius: .6rem; touch-action: none; }
-footer { border-top: 1px solid var(--border); padding: 2rem 1.25rem; text-align: center; font-size: .75rem; color: var(--muted); }
-@keyframes heat { 0%,100% { box-shadow: 0 0 28px rgba(255,90,0,.28); } 50% { box-shadow: 0 0 48px rgba(255,90,0,.55); } }
-@keyframes ember-up { 0% { transform: translateY(0) scale(1); opacity: 0; } 12% { opacity: 1; } 100% { transform: translateY(-220px) scale(.3); opacity: 0; } }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #050303;
+    color: #f3ece4;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 64px; }
+  img.frog { width: min(280px, 70vw); border-radius: 18px; }
+  h1 { font-size: clamp(48px, 14vw, 84px); margin: 12px 0 0; letter-spacing: 1px; }
+  h1 b { color: #ff3b1a; }
+  .tag { color: #ffb020; font-weight: 800; letter-spacing: .18em; font-size: 12px; }
+  p { color: #cbb7ab; line-height: 1.5; }
+  .btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 18px 0; }
+  a.btn, button.btn {
+    background: #ff3b1a; color: #fff; border: 0; border-radius: 999px;
+    padding: 12px 18px; font-weight: 800; text-decoration: none; cursor: pointer;
+  }
+  a.ghost, button.ghost { background: #1a0c0a; border: 1px solid #6a2a1c; }
+  .ca { background: #140808; border: 1px dashed #4a2218; border-radius: 12px; padding: 12px; word-break: break-all; font-size: 13px; }
+  .play {
+    margin-top: 28px; background: #120707; border: 1px solid #4a1c14;
+    border-radius: 16px; padding: 18px;
+  }
+  .score { font-size: 28px; font-weight: 800; margin: 8px 0 14px; }
+  #fire {
+    width: 100%; max-width: 360px; min-height: 72px; font-size: 22px;
+    background: linear-gradient(#ff5a22, #b50d00);
+  }
+  footer { margin-top: 28px; color: #7d635a; font-size: 12px; }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="glow"></div>
-  <div class="inner">
-    <header>
-      <a class="brand" href="#top">
-        <img src="https://i.imgur.com/sMtcXs4.jpeg" alt="Evil Pepe"/>
-        $<span>EPEPE</span>
-      </a>
-      <nav>
-        <a href="#burn">Play</a>
-        <a href="https://dexscreener.com/pulsechain/0x5627b7ea910e292b565f7f31824bc9018c1a804d" target="_blank" rel="noreferrer">Chart</a>
-        <a class="buy" href="https://pulsex.exchange/#/swap?outputCurrency=0xf646e3d650795ec693960f874b906a1b8db91c76" target="_blank" rel="noreferrer">Buy</a>
-      </nav>
-    </header>
+  <div class="wrap">
+    <div class="tag">BONDED · PULSECHAIN</div>
+    <img class="frog" src="https://i.imgur.com/sMtcXs4.jpeg" alt="Evil Pepe"/>
+    <h1>$EPE<b>PE</b></h1>
+    <p>Curve’s dead. Live on PulseX. He screams, supply burns.</p>
 
-    <div class="hero" id="top">
-      <div class="badge">BONDED · PULSEX</div>
-      <div class="ember-layer">
-        <span class="ember"></span><span class="ember"></span><span class="ember"></span><span class="ember"></span>
-        <span class="ember"></span><span class="ember"></span><span class="ember"></span><span class="ember"></span>
-        <span class="ember"></span>
-      </div>
-      <video autoplay muted loop playsinline poster="https://i.imgur.com/iykfgdJ.jpeg">
-        <source src="https://i.imgur.com/Ool6t7z.mp4" type="video/mp4"/>
-      </video>
+    <div class="btns">
+      <a class="btn" href="https://pulsex.exchange/#/swap?outputCurrency=0xf646e3d650795ec693960f874b906a1b8db91c76" target="_blank" rel="noreferrer">Buy</a>
+      <a class="btn ghost" href="https://dexscreener.com/pulsechain/0x5627b7ea910e292b565f7f31824bc9018c1a804d" target="_blank" rel="noreferrer">Chart</a>
+      <a class="btn ghost" href="https://x.com/evilpepelol" target="_blank" rel="noreferrer">X @evilpepelol</a>
+      <button class="btn ghost" id="copy" type="button">Copy CA</button>
     </div>
 
-    <div class="copy">
-      <p class="kicker">PulseChain · PulseX · DexScreener</p>
-      <h1>EVIL PEPE<em>WE BONDED</em></h1>
-      <p class="blurb">Curve’s dead. LP is locked on PulseX. Sold bags already burned on the way up. The frog is live. It’s biblical.</p>
-    </div>
+    <div class="ca">0xf646e3d650795ec693960f874b906a1b8db91c76</div>
 
-    <dl class="stats">
-      <div class="stat"><dt>Status</dt><dd>Bonded</dd></div>
-      <div class="stat"><dt>EPEPE burned</dt><dd id="burned">—</dd></div>
-      <div class="stat"><dt>Circulating</dt><dd id="supply">—</dd></div>
-      <div class="stat"><dt>Price</dt><dd id="price">—</dd></div>
-    </dl>
-
-    <div class="actions">
-      <a class="btn" href="https://pulsex.exchange/#/swap?outputCurrency=0xf646e3d650795ec693960f874b906a1b8db91c76" target="_blank" rel="noreferrer">Buy on PulseX</a>
-      <a class="btn ghost" href="https://dexscreener.com/pulsechain/0x5627b7ea910e292b565f7f31824bc9018c1a804d" target="_blank" rel="noreferrer">DexScreener</a>
-      <a class="btn ghost" href="#burn">Play Burn</a>
-    </div>
-    <div class="ca">
-      <span>CA</span>
-      <code>0xf646e3d650795ec693960f874b906a1b8db91c76</code>
-      <button type="button" id="copy">Copy</button>
-    </div>
-
-    <h2>After bond</h2>
-    <div class="grid2">
-      <article class="card"><h3>Live on PulseX</h3><p>Same contract. LP tokens burned. Ownership renounced. Trade the pair, not the curve.</p></article>
-      <article class="card"><h3>Supply already cut</h3><p>Dumped bags got burned before graduation. Circulating is under a billion and those coins are gone.</p></article>
-      <article class="card"><h3>Chart</h3><p>DexScreener is the public tape. Pay for socials there so the page shows X + evilpepe.lol.</p></article>
-      <article class="card"><h3>Same fire</h3><p>No more curve burn button. Burns after PulseX are manual. The frog still screams.</p></article>
-    </div>
-
-    <h2 id="burn">Burn the bags</h2>
-    <div class="game-box">
-      <p>Hold click or tap to breathe fire. Torch the bags before they dump. Score = supply burned.</p>
-      <canvas id="game" width="900" height="420"></canvas>
-      <div class="actions">
-        <button class="btn" id="start" type="button">Start fire</button>
+    <div class="play">
+      <div class="tag">BURN THE BAGS</div>
+      <div class="score">Burned <span id="score">0</span></div>
+      <p>Tap the button. Every tap torches a bag.</p>
+      <button class="btn" id="fire" type="button">BREATHE FIRE</button>
+      <div class="btns">
         <button class="btn ghost" id="share" type="button">Copy score</button>
       </div>
     </div>
-  </div>
-  <footer>$EPEPE is a memecoin. Nothing here is financial advice. Supply to ash.</footer>
-</div>
-<script>
-const CA = "0xf646e3d650795ec693960f874b906a1b8db91c76";
-function fmt(n) {
-  if (!isFinite(n)) return "—";
-  if (n >= 1e9) return (n / 1e9).toFixed(2).replace(/\.00$/, "") + "B";
-  if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, "") + "M";
-  if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, "") + "K";
-  return Math.round(n).toString();
-}
-fetch("https://api2.pump.tires/api/tokens/" + CA).then(r => r.json()).then(d => {
-  const t = d.token || {};
-  const supply = Number(t.total_supply || 0);
-  document.getElementById("burned").textContent = fmt(Math.max(0, 1e9 - supply));
-  document.getElementById("supply").textContent = fmt(supply);
-  document.getElementById("price").textContent = Number(t.price || 0).toFixed(3) + " PLS";
-}).catch(() => {});
-const btn = document.getElementById("copy");
-btn.addEventListener("click", async function () {
-  try { await navigator.clipboard.writeText(CA); btn.textContent = "Copied"; setTimeout(() => btn.textContent = "Copy", 1600); } catch (e) {}
-});
 
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-let running = false, firing = false, score = 0, best = Number(localStorage.getItem("epepeBest") || 0);
-let tick = 0, bags = [], flames = [], lost = false;
-const press = () => { firing = true; if (!running) startGame(); };
-const release = () => { firing = false; };
-canvas.addEventListener("mousedown", press);
-canvas.addEventListener("mouseup", release);
-canvas.addEventListener("mouseleave", release);
-canvas.addEventListener("touchstart", e => { e.preventDefault(); press(); }, { passive: false });
-canvas.addEventListener("touchend", e => { e.preventDefault(); release(); }, { passive: false });
-document.getElementById("start").onclick = startGame;
-document.getElementById("share").onclick = async () => {
-  const text = "$EPEPE BURN SCORE " + score + " · best " + best + " · evilpepe.lol";
-  try { await navigator.clipboard.writeText(text); document.getElementById("share").textContent = "Copied"; } catch (e) {}
-};
-function startGame() { running = true; lost = false; score = 0; bags = []; flames = []; tick = 0; firing = false; }
-function loop() {
-  tick++;
-  ctx.fillStyle = "#080202"; ctx.fillRect(0, 0, 900, 420);
-  ctx.fillStyle = "#2f8a3a"; ctx.beginPath(); ctx.ellipse(120, 230, 70, 58, 0, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = "#c62828";
-  ctx.beginPath(); ctx.moveTo(88, 175); ctx.lineTo(98, 145); ctx.lineTo(112, 178); ctx.fill();
-  ctx.beginPath(); ctx.moveTo(138, 175); ctx.lineTo(154, 145); ctx.lineTo(162, 180); ctx.fill();
-  ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(108, 215, 12, 0, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(148, 215, 12, 0, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = "#111"; ctx.beginPath(); ctx.arc(112, 217, 5, 0, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(152, 217, 5, 0, 0, Math.PI * 2); ctx.fill();
-  if (running && firing) flames.push({ x: 175, y: 250 + Math.sin(tick / 4) * 6, w: 90, life: 16 });
-  flames.forEach(f => {
-    f.x += 14; f.w += 6; f.life--;
-    const g = ctx.createLinearGradient(f.x, f.y, f.x + f.w, f.y);
-    g.addColorStop(0, "#ffeb7a"); g.addColorStop(.45, "#ff4a12"); g.addColorStop(1, "rgba(255,40,0,0)");
-    ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(f.x + f.w / 2, f.y, f.w / 2, 16, 0, 0, Math.PI * 2); ctx.fill();
-  });
-  flames = flames.filter(f => f.life > 0);
-  if (running && !lost && tick % 42 === 0) bags.push({ x: 920, y: 80 + Math.random() * 260, v: 2.2 + Math.random() * 2.4, r: 22 + Math.random() * 10 });
-  bags.forEach(b => {
-    if (running && !lost) b.x -= b.v;
-    ctx.fillStyle = "#8a5a22"; ctx.beginPath(); ctx.ellipse(b.x, b.y, b.r, b.r * 1.15, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#111"; ctx.font = "bold 18px Impact"; ctx.fillText("$", b.x - 6, b.y + 6);
-  });
-  bags = bags.filter(b => {
-    const hit = flames.some(f => Math.abs((f.x + f.w / 2) - b.x) < f.w / 2 + b.r && Math.abs(f.y - b.y) < 28 + b.r / 2);
-    if (hit) { score += 697; return false; }
-    if (b.x < 70) { lost = true; running = false; best = Math.max(best, score); localStorage.setItem("epepeBest", String(best)); }
-    return b.x >= 70;
-  });
-  ctx.fillStyle = "#fff"; ctx.font = "22px Impact"; ctx.fillText("BURNED  " + score, 16, 32); ctx.fillText("BEST  " + best, 16, 58);
-  if (!running) {
-    ctx.fillStyle = "rgba(0,0,0,.45)"; ctx.fillRect(0, 160, 900, 90);
-    ctx.fillStyle = "#ffd27a"; ctx.font = "32px Impact";
-    ctx.fillText(lost ? "A BAG DUMPED. TRY AGAIN." : "HOLD TO BREATHE FIRE", 200, 215);
-  }
-  requestAnimationFrame(loop);
-}
-loop();
-</script>
+    <footer>evilpepe.lol · @evilpepelol · not financial advice</footer>
+  </div>
+  <script>
+    var CA = "0xf646e3d650795ec693960f874b906a1b8db91c76";
+    var score = 0;
+    document.getElementById("copy").onclick = function () {
+      if (navigator.clipboard) navigator.clipboard.writeText(CA);
+      this.textContent = "Copied";
+    };
+    document.getElementById("fire").onclick = function () {
+      score += 697;
+      document.getElementById("score").textContent = score;
+    };
+    document.getElementById("share").onclick = function () {
+      var text = "$EPEPE burned " + score + " bags · x.com/evilpepelol · evilpepe.lol";
+      if (navigator.clipboard) navigator.clipboard.writeText(text);
+      this.textContent = "Copied";
+    };
+  </script>
 </body>
 </html>
