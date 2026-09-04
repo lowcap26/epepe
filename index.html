@@ -3,13 +3,12 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>$EPEPE — Evil Pepe</title>
-<link rel="icon" href="https://i.imgur.com/sMtcXs4.jpeg" type="image/jpeg"/>
-<meta name="theme-color" content="#070403"/>
-<meta property="og:title" content="$EPEPE — Evil Pepe"/>
-<meta property="og:description" content="SUPPLY TO ASH. Sold bags get burned until the curve bonds."/>
-<meta property="og:image" content="https://i.imgur.com/iykfgdJ.jpeg"/>
-<meta name="twitter:card" content="summary_large_image"/>
+<title>$EPEPE — BONDED</title>
+<meta name="description" content="$EPEPE bonded. Live on PulseX. He screams, supply burns."/>
+<meta property="og:title" content="$EPEPE — BONDED"/>
+<meta property="og:description" content="Curve dead. LP live on PulseX. It's biblical."/>
+<meta property="og:image" content="https://i.imgur.com/sMtcXs4.jpeg"/>
+<link rel="icon" href="https://i.imgur.com/sMtcXs4.jpeg"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
@@ -30,213 +29,53 @@ html, body { margin: 0; background: var(--bg); color: var(--fg); font-family: In
 a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; }
 .wrap { position: relative; min-height: 100dvh; }
-.glow {
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(ellipse at top, rgba(255,90,0,.18), transparent 55%);
-}
+.glow { pointer-events: none; position: fixed; inset: 0; background: radial-gradient(ellipse at top, rgba(255,90,0,.18), transparent 55%); }
 .inner { position: relative; z-index: 1; max-width: 64rem; margin: 0 auto; padding: 0 1.25rem; }
 header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 0; }
-.brand {
-  display: flex;
-  align-items: center;
-  gap: .75rem;
-  font-family: "Bebas Neue", Impact, sans-serif;
-  font-size: 1.5rem;
-  letter-spacing: .04em;
-}
-.brand img { width: 2.5rem; height: 2.5rem; border-radius: .35rem; object-fit: cover; }
+.brand { display: flex; align-items: center; gap: .75rem; font-family: "Bebas Neue", Impact, sans-serif; font-size: 1.5rem; letter-spacing: .04em; }
+.brand img { width: 2.5rem; height: 2.5rem; border-radius: 999px; object-fit: cover; }
 .brand span { color: var(--fire); }
 nav { display: none; gap: 1.5rem; font-size: .875rem; font-weight: 600; color: var(--muted); }
 nav a:hover { color: var(--fg); }
 nav .buy { color: var(--fire); }
 @media (min-width: 640px) { nav { display: flex; } }
-.hero {
-  position: relative;
-  max-width: 36rem;
-  margin: 0 auto;
-  overflow: hidden;
-  border-radius: .875rem;
-  animation: heat 1.6s ease-in-out infinite;
-}
-.hero > img, .hero > video { display: block; width: 100%; height: auto; }
-.hero-still { animation: flicker 1.1s ease-in-out infinite; }
-.hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
-@media (prefers-reduced-motion: reduce) {
-  .hero-video { display: none; }
-}
+.hero { position: relative; max-width: 36rem; margin: 0 auto; overflow: hidden; border-radius: .875rem; animation: heat 1.6s ease-in-out infinite; }
+.hero > video, .hero > img { display: block; width: 100%; height: auto; }
+.badge { position: absolute; top: .75rem; left: .75rem; z-index: 21; background: var(--fire); color: #fff; font-size: .7rem; font-weight: 800; letter-spacing: .12em; padding: .35rem .6rem; border-radius: 999px; }
 .ember-layer { pointer-events: none; position: absolute; inset: 0; z-index: 15; overflow: hidden; }
-.ember {
-  position: absolute;
-  bottom: 12%;
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--ember);
-  box-shadow: 0 0 8px var(--fire);
-  animation: ember-up 2.4s linear infinite;
-}
+.ember { position: absolute; bottom: 12%; width: 6px; height: 6px; border-radius: 999px; background: var(--ember); box-shadow: 0 0 8px var(--fire); animation: ember-up 2.4s linear infinite; }
 .ember:nth-child(odd) { background: var(--fire); }
-.ember:nth-child(1) { left: 12%; animation-duration: 2.1s; }
-.ember:nth-child(2) { left: 22%; animation-delay: .4s; animation-duration: 2.6s; }
-.ember:nth-child(3) { left: 31%; animation-delay: .8s; animation-duration: 2.2s; }
-.ember:nth-child(4) { left: 40%; animation-delay: .2s; animation-duration: 2.8s; }
-.ember:nth-child(5) { left: 48%; animation-delay: 1.1s; animation-duration: 2.3s; }
-.ember:nth-child(6) { left: 55%; animation-delay: .6s; animation-duration: 2.5s; }
-.ember:nth-child(7) { left: 63%; animation-delay: 1.4s; animation-duration: 2.1s; }
-.ember:nth-child(8) { left: 72%; animation-delay: .3s; animation-duration: 2.7s; }
-.ember:nth-child(9) { left: 80%; animation-delay: .9s; animation-duration: 2.4s; }
-.ember:nth-child(10) { left: 18%; animation-delay: 1.7s; animation-duration: 2.9s; }
-.ember:nth-child(11) { left: 27%; animation-delay: 1.2s; animation-duration: 2s; }
-.ember:nth-child(12) { left: 36%; animation-delay: 1.8s; animation-duration: 2.6s; }
-.ember:nth-child(13) { left: 52%; animation-delay: .5s; animation-duration: 2.2s; }
-.ember:nth-child(14) { left: 61%; animation-delay: 1.5s; animation-duration: 2.8s; }
-.ember:nth-child(15) { left: 69%; animation-delay: .1s; animation-duration: 2.3s; }
-.ember:nth-child(16) { left: 76%; animation-delay: 1.9s; animation-duration: 2.5s; }
-.ember:nth-child(17) { left: 44%; animation-delay: .7s; animation-duration: 2.1s; }
-.ember:nth-child(18) { left: 85%; animation-delay: 1.3s; animation-duration: 2.4s; }
-.flame-lick {
-  position: absolute;
-  bottom: 8%;
-  width: 18px;
-  height: 42px;
-  border-radius: 50% 50% 40% 40%;
-  background: linear-gradient(to top, var(--blood), var(--fire), var(--ember), transparent);
-  filter: blur(1px);
-  animation: lick .7s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 20;
-}
-.flame-lick:nth-child(3) { left: 18%; }
-.flame-lick:nth-child(4) { left: 28%; animation-delay: .15s; }
-.flame-lick:nth-child(5) { right: 22%; left: auto; animation-delay: .28s; }
-.flame-lick:nth-child(6) { right: 14%; left: auto; animation-delay: .08s; }
+.ember:nth-child(1) { left: 12%; } .ember:nth-child(2) { left: 22%; animation-delay: .4s; } .ember:nth-child(3) { left: 31%; animation-delay: .8s; }
+.ember:nth-child(4) { left: 40%; animation-delay: .2s; } .ember:nth-child(5) { left: 48%; animation-delay: 1.1s; } .ember:nth-child(6) { left: 55%; animation-delay: .6s; }
+.ember:nth-child(7) { left: 63%; animation-delay: 1.4s; } .ember:nth-child(8) { left: 72%; animation-delay: .3s; } .ember:nth-child(9) { left: 80%; animation-delay: .9s; }
 .copy { max-width: 42rem; margin: 2rem auto 0; text-align: center; }
 .kicker { font-size: .75rem; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--ember); }
-h1 {
-  font-family: "Bebas Neue", Impact, sans-serif;
-  font-size: clamp(3.5rem, 10vw, 6rem);
-  line-height: .9;
-  margin: .5rem 0 0;
-  font-weight: 400;
-}
-h1 em { display: block; font-style: normal; color: var(--fire); animation: flicker 1.1s ease-in-out infinite; }
+h1 { font-family: "Bebas Neue", Impact, sans-serif; font-size: clamp(3.5rem, 10vw, 6rem); line-height: .9; margin: .5rem 0 0; font-weight: 400; }
+h1 em { display: block; font-style: normal; color: var(--fire); }
 .blurb { max-width: 36rem; margin: 1rem auto 0; color: var(--muted); line-height: 1.6; }
 h2 { font-family: "Bebas Neue", Impact, sans-serif; font-size: 2.25rem; font-weight: 400; margin: 0; }
 .stats { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 2.5rem; }
 @media (min-width: 640px) { .stats { grid-template-columns: repeat(4, 1fr); } }
-.card, .stat {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: .875rem;
-  padding: 1.1rem 1.15rem;
-}
+.card, .stat { background: var(--surface); border: 1px solid var(--border); border-radius: .875rem; padding: 1.1rem 1.15rem; }
 .stat dt { font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .stat dd { font-family: "Bebas Neue", Impact, sans-serif; font-size: 1.875rem; margin: .25rem 0 0; }
-.bar-meta {
-  display: flex;
-  justify-content: space-between;
-  margin: 1.25rem 0 .5rem;
-  font-size: .75rem;
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.track { height: .75rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); overflow: hidden; }
-.fill {
-  height: 100%;
-  width: 2%;
-  background: linear-gradient(90deg, var(--blood), var(--fire), var(--ember), var(--fire), var(--blood));
-  background-size: 200% 100%;
-  animation: bar-shimmer 1.8s linear infinite;
-}
 .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; margin-top: 2rem; }
-.btn {
-  display: inline-flex;
-  align-items: center;
-  min-height: 2.75rem;
-  padding: .75rem 1.5rem;
-  border-radius: 999px;
-  font-size: .875rem;
-  font-weight: 800;
-  background: var(--fire);
-  color: var(--fg);
-}
+.btn { display: inline-flex; align-items: center; min-height: 2.75rem; padding: .75rem 1.5rem; border-radius: 999px; font-size: .875rem; font-weight: 800; background: var(--fire); color: var(--fg); border: 0; }
 .btn.ghost { background: transparent; border: 1px solid var(--border); }
-.ca {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: .75rem;
-  margin: 1.5rem 0 4rem;
-  padding: .75rem 1rem;
-  border: 1px dashed var(--border);
-  border-radius: .875rem;
-  background: var(--surface);
-  font-size: .8rem;
-}
+.ca { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin: 1.5rem 0 2rem; padding: .75rem 1rem; border: 1px dashed var(--border); border-radius: .875rem; background: var(--surface); font-size: .8rem; }
 .ca span { color: var(--muted); }
 .ca code { flex: 1; min-width: 0; word-break: break-all; }
-.ca button {
-  min-height: 2.75rem;
-  border: 0;
-  border-radius: 999px;
-  padding: 0 1rem;
-  background: var(--bg);
-  color: var(--fg);
-  font-size: .75rem;
-  font-weight: 800;
-}
+.ca button { min-height: 2.75rem; border: 0; border-radius: 999px; padding: 0 1rem; background: var(--bg); color: var(--fg); font-size: .75rem; font-weight: 800; }
 .grid2 { display: grid; gap: .75rem; margin: 1.5rem 0 3rem; }
 @media (min-width: 640px) { .grid2 { grid-template-columns: 1fr 1fr; } }
 .card h3 { margin: 0; font-size: .875rem; }
 .card p { margin: .5rem 0 0; color: var(--muted); font-size: .875rem; line-height: 1.6; }
-.note {
-  display: flex;
-  gap: 1rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: .875rem;
-  padding: 1.25rem;
-  margin: 1.25rem 0 5rem;
-}
-.note p { margin: 0; color: var(--muted); font-size: .875rem; line-height: 1.6; }
-.flame { width: 1.5rem; height: 1.5rem; flex-shrink: 0; color: var(--fire); animation: pulse 1.4s ease-in-out infinite; }
+.game-box { background: var(--surface); border: 1px solid var(--border); border-radius: .875rem; padding: 1rem; margin: 1.25rem 0 4rem; }
+.game-box p { color: var(--muted); font-size: .875rem; }
+canvas { width: 100%; height: auto; display: block; background: #050202; border-radius: .6rem; touch-action: none; }
 footer { border-top: 1px solid var(--border); padding: 2rem 1.25rem; text-align: center; font-size: .75rem; color: var(--muted); }
-@keyframes flicker {
-  0%, 100% { filter: brightness(1) saturate(1); opacity: 1; }
-  40% { filter: brightness(1.18) saturate(1.2); opacity: .92; }
-  70% { filter: brightness(.92) saturate(1.05); opacity: 1; }
-}
-@keyframes lick {
-  0%, 100% { transform: translateY(0) scaleY(1) scaleX(1); opacity: .7; }
-  50% { transform: translateY(-10px) scaleY(1.18) scaleX(.86); opacity: 1; }
-}
-@keyframes heat {
-  0%, 100% { box-shadow: 0 0 28px rgba(255,90,0,.28); }
-  50% { box-shadow: 0 0 48px rgba(255,90,0,.55); }
-}
-@keyframes bar-shimmer {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
-}
-@keyframes ember-up {
-  0% { transform: translateY(0) scale(1); opacity: 0; }
-  12% { opacity: 1; }
-  100% { transform: translateY(-220px) scale(.3); opacity: 0; }
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: .45; }
-}
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-  }
-}
+@keyframes heat { 0%,100% { box-shadow: 0 0 28px rgba(255,90,0,.28); } 50% { box-shadow: 0 0 48px rgba(255,90,0,.55); } }
+@keyframes ember-up { 0% { transform: translateY(0) scale(1); opacity: 0; } 12% { opacity: 1; } 100% { transform: translateY(-220px) scale(.3); opacity: 0; } }
 </style>
 </head>
 <body>
@@ -244,53 +83,46 @@ footer { border-top: 1px solid var(--border); padding: 2rem 1.25rem; text-align:
   <div class="glow"></div>
   <div class="inner">
     <header>
-      <a class="brand" href="https://pump.tires/token/0xf646e3d650795ec693960f874b906a1b8db91c76">
+      <a class="brand" href="#top">
         <img src="https://i.imgur.com/sMtcXs4.jpeg" alt="Evil Pepe"/>
         $<span>EPEPE</span>
       </a>
       <nav>
-        <a href="#tokenomics">Tokenomics</a>
-        <a href="#burns">Burns</a>
-        <a class="buy" href="https://pump.tires/token/0xf646e3d650795ec693960f874b906a1b8db91c76">Buy</a>
+        <a href="#burn">Play</a>
+        <a href="https://dexscreener.com/pulsechain/0x5627b7ea910e292b565f7f31824bc9018c1a804d" target="_blank" rel="noreferrer">Chart</a>
+        <a class="buy" href="https://pulsex.exchange/#/swap?outputCurrency=0xf646e3d650795ec693960f874b906a1b8db91c76" target="_blank" rel="noreferrer">Buy</a>
       </nav>
     </header>
 
-    <div class="hero">
+    <div class="hero" id="top">
+      <div class="badge">BONDED · PULSEX</div>
       <div class="ember-layer">
         <span class="ember"></span><span class="ember"></span><span class="ember"></span><span class="ember"></span>
         <span class="ember"></span><span class="ember"></span><span class="ember"></span><span class="ember"></span>
-        <span class="ember"></span><span class="ember"></span><span class="ember"></span><span class="ember"></span>
-        <span class="ember"></span><span class="ember"></span><span class="ember"></span><span class="ember"></span>
-        <span class="ember"></span><span class="ember"></span>
+        <span class="ember"></span>
       </div>
-      <img class="hero-still" src="https://i.imgur.com/iykfgdJ.jpeg" alt="Evil Pepe holding burning money bags and breathing fire"/>
-      <video class="hero-video" autoplay muted loop playsinline poster="https://i.imgur.com/iykfgdJ.jpeg">
+      <video autoplay muted loop playsinline poster="https://i.imgur.com/iykfgdJ.jpeg">
         <source src="https://i.imgur.com/Ool6t7z.mp4" type="video/mp4"/>
       </video>
-      <span class="flame-lick"></span>
-      <span class="flame-lick"></span>
-      <span class="flame-lick"></span>
-      <span class="flame-lick"></span>
     </div>
 
     <div class="copy">
-      <p class="kicker">PulseChain · pump.tires</p>
-      <h1>EVIL PEPE<em>SUPPLY TO ASH</em></h1>
-      <p class="blurb">Evil Pepe. Horns on. Sold bags get burned until the curve bonds. Isn't it a little evil to torch supply like that? Yeah. That's the point.</p>
+      <p class="kicker">PulseChain · PulseX · DexScreener</p>
+      <h1>EVIL PEPE<em>WE BONDED</em></h1>
+      <p class="blurb">Curve’s dead. LP is locked on PulseX. Sold bags already burned on the way up. The frog is live. It’s biblical.</p>
     </div>
 
     <dl class="stats">
+      <div class="stat"><dt>Status</dt><dd>Bonded</dd></div>
       <div class="stat"><dt>EPEPE burned</dt><dd id="burned">—</dd></div>
-      <div class="stat"><dt>Bonding curve</dt><dd id="bond">…</dd></div>
-      <div class="stat"><dt>Circulating</dt><dd id="supply">1B</dd></div>
-      <div class="stat"><dt>To graduate</dt><dd>200M PLS</dd></div>
+      <div class="stat"><dt>Circulating</dt><dd id="supply">—</dd></div>
+      <div class="stat"><dt>Price</dt><dd id="price">—</dd></div>
     </dl>
-    <div class="bar-meta"><span>Bonding</span><span id="caption">Loading pump.tires…</span></div>
-    <div class="track"><div class="fill" id="bar"></div></div>
 
     <div class="actions">
-      <a class="btn" href="https://pump.tires/token/0xf646e3d650795ec693960f874b906a1b8db91c76">Buy on pump.tires</a>
-      <a class="btn ghost" href="https://scan.pulsechain.com/address/0xf646e3d650795ec693960f874b906a1b8db91c76">View contract</a>
+      <a class="btn" href="https://pulsex.exchange/#/swap?outputCurrency=0xf646e3d650795ec693960f874b906a1b8db91c76" target="_blank" rel="noreferrer">Buy on PulseX</a>
+      <a class="btn ghost" href="https://dexscreener.com/pulsechain/0x5627b7ea910e292b565f7f31824bc9018c1a804d" target="_blank" rel="noreferrer">DexScreener</a>
+      <a class="btn ghost" href="#burn">Play Burn</a>
     </div>
     <div class="ca">
       <span>CA</span>
@@ -298,70 +130,102 @@ footer { border-top: 1px solid var(--border); padding: 2rem 1.25rem; text-align:
       <button type="button" id="copy">Copy</button>
     </div>
 
-    <h2 id="tokenomics">Tokenomics</h2>
+    <h2>After bond</h2>
     <div class="grid2">
-      <article class="card"><h3>Fair launch</h3><p>No tax. No team bag. One billion supply. Ownership dies when it bonds.</p></article>
-      <article class="card"><h3>Curve fire</h3><p>One percent of every trade burns as PLS. Coins burned for PLS never come back.</p></article>
-      <article class="card"><h3>Sold bags</h3><p>Until graduation, dumped bags get pulled off the curve and burned. They do not recycle.</p></article>
-      <article class="card"><h3>Graduation</h3><p>At two hundred million PLS bid liquidity it lists on PulseX. LP burned. Contract dead.</p></article>
+      <article class="card"><h3>Live on PulseX</h3><p>Same contract. LP tokens burned. Ownership renounced. Trade the pair, not the curve.</p></article>
+      <article class="card"><h3>Supply already cut</h3><p>Dumped bags got burned before graduation. Circulating is under a billion and those coins are gone.</p></article>
+      <article class="card"><h3>Chart</h3><p>DexScreener is the public tape. Pay for socials there so the page shows X + evilpepe.lol.</p></article>
+      <article class="card"><h3>Same fire</h3><p>No more curve burn button. Burns after PulseX are manual. The frog still screams.</p></article>
     </div>
 
-    <h2 id="burns">Sold bags get burned</h2>
-    <div class="note">
-      <svg class="flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
-      </svg>
-      <p>Sellers sell. Evil Pepe breathes fire on the bag. That position is gone until bond. After PulseX, burns are manual — same fire, no curve button.</p>
+    <h2 id="burn">Burn the bags</h2>
+    <div class="game-box">
+      <p>Hold click or tap to breathe fire. Torch the bags before they dump. Score = supply burned.</p>
+      <canvas id="game" width="900" height="420"></canvas>
+      <div class="actions">
+        <button class="btn" id="start" type="button">Start fire</button>
+        <button class="btn ghost" id="share" type="button">Copy score</button>
+      </div>
     </div>
   </div>
   <footer>$EPEPE is a memecoin. Nothing here is financial advice. Supply to ash.</footer>
 </div>
 <script>
 const CA = "0xf646e3d650795ec693960f874b906a1b8db91c76";
-const API = "https://api2.pump.tires/api/tokens/" + CA;
-const INITIAL = 1000000000;
-const FOR_SALE = 820000000;
-
 function fmt(n) {
+  if (!isFinite(n)) return "—";
   if (n >= 1e9) return (n / 1e9).toFixed(2).replace(/\.00$/, "") + "B";
   if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, "") + "M";
   if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, "") + "K";
   return Math.round(n).toString();
 }
-
-async function load() {
-  try {
-    const res = await fetch(API);
-    if (!res.ok) throw new Error(String(res.status));
-    const data = await res.json();
-    const t = data.token || {};
-    const sold = Number(t.tokens_sold || 0);
-    const supply = Number(t.total_supply || INITIAL);
-    const burned = Math.max(0, INITIAL - supply);
-    const pct = Math.max(0, Math.min(100, Math.round((sold / FOR_SALE) * 100)));
-    document.getElementById("burned").textContent = fmt(burned);
-    document.getElementById("bond").textContent = t.is_launched ? "Graduated" : pct + "%";
-    document.getElementById("supply").textContent = fmt(supply);
-    document.getElementById("caption").textContent = t.is_launched
-      ? "Listed on PulseX"
-      : pct + "% bonded · live from pump.tires";
-    document.getElementById("bar").style.width = Math.max(2, pct) + "%";
-  } catch (err) {
-    document.getElementById("caption").textContent = "Could not reach pump.tires";
-  }
-}
-
-load();
-setInterval(load, 15000);
-
+fetch("https://api2.pump.tires/api/tokens/" + CA).then(r => r.json()).then(d => {
+  const t = d.token || {};
+  const supply = Number(t.total_supply || 0);
+  document.getElementById("burned").textContent = fmt(Math.max(0, 1e9 - supply));
+  document.getElementById("supply").textContent = fmt(supply);
+  document.getElementById("price").textContent = Number(t.price || 0).toFixed(3) + " PLS";
+}).catch(() => {});
 const btn = document.getElementById("copy");
 btn.addEventListener("click", async function () {
-  try {
-    await navigator.clipboard.writeText(CA);
-    btn.textContent = "Copied";
-    setTimeout(function () { btn.textContent = "Copy"; }, 1600);
-  } catch (err) {}
+  try { await navigator.clipboard.writeText(CA); btn.textContent = "Copied"; setTimeout(() => btn.textContent = "Copy", 1600); } catch (e) {}
 });
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+let running = false, firing = false, score = 0, best = Number(localStorage.getItem("epepeBest") || 0);
+let tick = 0, bags = [], flames = [], lost = false;
+const press = () => { firing = true; if (!running) startGame(); };
+const release = () => { firing = false; };
+canvas.addEventListener("mousedown", press);
+canvas.addEventListener("mouseup", release);
+canvas.addEventListener("mouseleave", release);
+canvas.addEventListener("touchstart", e => { e.preventDefault(); press(); }, { passive: false });
+canvas.addEventListener("touchend", e => { e.preventDefault(); release(); }, { passive: false });
+document.getElementById("start").onclick = startGame;
+document.getElementById("share").onclick = async () => {
+  const text = "$EPEPE BURN SCORE " + score + " · best " + best + " · evilpepe.lol";
+  try { await navigator.clipboard.writeText(text); document.getElementById("share").textContent = "Copied"; } catch (e) {}
+};
+function startGame() { running = true; lost = false; score = 0; bags = []; flames = []; tick = 0; firing = false; }
+function loop() {
+  tick++;
+  ctx.fillStyle = "#080202"; ctx.fillRect(0, 0, 900, 420);
+  ctx.fillStyle = "#2f8a3a"; ctx.beginPath(); ctx.ellipse(120, 230, 70, 58, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#c62828";
+  ctx.beginPath(); ctx.moveTo(88, 175); ctx.lineTo(98, 145); ctx.lineTo(112, 178); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(138, 175); ctx.lineTo(154, 145); ctx.lineTo(162, 180); ctx.fill();
+  ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(108, 215, 12, 0, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(148, 215, 12, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#111"; ctx.beginPath(); ctx.arc(112, 217, 5, 0, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(152, 217, 5, 0, 0, Math.PI * 2); ctx.fill();
+  if (running && firing) flames.push({ x: 175, y: 250 + Math.sin(tick / 4) * 6, w: 90, life: 16 });
+  flames.forEach(f => {
+    f.x += 14; f.w += 6; f.life--;
+    const g = ctx.createLinearGradient(f.x, f.y, f.x + f.w, f.y);
+    g.addColorStop(0, "#ffeb7a"); g.addColorStop(.45, "#ff4a12"); g.addColorStop(1, "rgba(255,40,0,0)");
+    ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(f.x + f.w / 2, f.y, f.w / 2, 16, 0, 0, Math.PI * 2); ctx.fill();
+  });
+  flames = flames.filter(f => f.life > 0);
+  if (running && !lost && tick % 42 === 0) bags.push({ x: 920, y: 80 + Math.random() * 260, v: 2.2 + Math.random() * 2.4, r: 22 + Math.random() * 10 });
+  bags.forEach(b => {
+    if (running && !lost) b.x -= b.v;
+    ctx.fillStyle = "#8a5a22"; ctx.beginPath(); ctx.ellipse(b.x, b.y, b.r, b.r * 1.15, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#111"; ctx.font = "bold 18px Impact"; ctx.fillText("$", b.x - 6, b.y + 6);
+  });
+  bags = bags.filter(b => {
+    const hit = flames.some(f => Math.abs((f.x + f.w / 2) - b.x) < f.w / 2 + b.r && Math.abs(f.y - b.y) < 28 + b.r / 2);
+    if (hit) { score += 697; return false; }
+    if (b.x < 70) { lost = true; running = false; best = Math.max(best, score); localStorage.setItem("epepeBest", String(best)); }
+    return b.x >= 70;
+  });
+  ctx.fillStyle = "#fff"; ctx.font = "22px Impact"; ctx.fillText("BURNED  " + score, 16, 32); ctx.fillText("BEST  " + best, 16, 58);
+  if (!running) {
+    ctx.fillStyle = "rgba(0,0,0,.45)"; ctx.fillRect(0, 160, 900, 90);
+    ctx.fillStyle = "#ffd27a"; ctx.font = "32px Impact";
+    ctx.fillText(lost ? "A BAG DUMPED. TRY AGAIN." : "HOLD TO BREATHE FIRE", 200, 215);
+  }
+  requestAnimationFrame(loop);
+}
+loop();
 </script>
 </body>
 </html>
