@@ -4,55 +4,104 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <title>$EPEPE</title>
-<link rel="icon" href="https://i.imgur.com/sMtcXs4.jpeg"/>
-<meta property="og:image" content="https://i.imgur.com/sMtcXs4.jpeg"/>
+<link rel="icon" href="https://h.uguu.se/TvqnFXvY.png"/>
 <style>
-  * { box-sizing: border-box; }
-  html, body { margin: 0; background: #050303; color: #f4ece6; font-family: Arial, Helvetica, sans-serif; }
-  .top { padding: 16px 14px 8px; text-align: center; }
-  .frog-icon { width: 72px; height: 72px; border-radius: 16px; object-fit: cover; }
-  h1 { margin: 8px 0 10px; font-size: 42px; letter-spacing: 1px; }
-  h1 b { color: #ff3418; }
-  .btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-  a, button {
-    appearance: none; border: 0; background: #1b0c0a; color: #fff;
-    border: 1px solid #6a2418; border-radius: 999px; padding: 10px 14px;
-    font-weight: 800; text-decoration: none; cursor: pointer;
-  }
-  a.buy { background: #ff3418; border-color: #ff3418; }
-  .ca { margin: 10px 14px 0; text-align: center; color: #9a7d72; font-size: 11px; word-break: break-all; }
-  .hud { display: flex; justify-content: space-between; padding: 8px 14px; font-weight: 800; }
-  canvas { width: 100%; height: auto; display: block; background: #0a0404; touch-action: none; }
-  .hint { text-align: center; color: #b89a90; font-size: 13px; padding: 8px 14px 24px; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #000; color: #f4ece6; font-family: Arial, Helvetica, sans-serif; }
+.top { padding: 18px 14px 10px; text-align: center; }
+h1 { margin: 6px 0 10px; font-size: 48px; letter-spacing: 1px; }
+h1 b { color: #ff3418; }
+.btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+a, button {
+  appearance: none; background: #1b0c0a; color: #fff;
+  border: 1px solid #6a2418; border-radius: 999px; padding: 10px 14px;
+  font-weight: 800; text-decoration: none; cursor: pointer;
+}
+a.buy { background: #ff3418; border-color: #ff3418; }
+.ca { margin: 10px 14px 0; text-align: center; color: #9a7d72; font-size: 11px; word-break: break-all; }
+.stage {
+  position: relative;
+  width: min(420px, 92vw);
+  aspect-ratio: 1;
+  margin: 8px auto 0;
+}
+.glow {
+  position: absolute; inset: 8% 0 8% 18%;
+  background: radial-gradient(circle at 70% 55%, rgba(255,90,10,.45), transparent 62%);
+  filter: blur(18px);
+  animation: heat 1.1s ease-in-out infinite;
+  pointer-events: none;
+}
+.pepe {
+  position: relative; z-index: 2;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  transform-origin: 38% 58%;
+  animation: breathe 1.15s ease-in-out infinite;
+}
+.embers { position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
+.ember {
+  position: absolute; width: 7px; height: 7px; border-radius: 50%;
+  background: #ffb020; box-shadow: 0 0 8px #ff4a12;
+  left: 68%; top: 52%; animation: spark 1.3s linear infinite;
+}
+.ember:nth-child(2) { left: 74%; animation-delay: .2s; animation-duration: 1.05s; }
+.ember:nth-child(3) { left: 80%; animation-delay: .45s; animation-duration: 1.4s; }
+.ember:nth-child(4) { left: 71%; top: 48%; animation-delay: .7s; }
+.ember:nth-child(5) { left: 84%; top: 55%; animation-delay: .15s; animation-duration: .9s; background: #ff3b12; }
+.ember:nth-child(6) { left: 77%; top: 46%; animation-delay: .9s; }
+@keyframes breathe {
+  0%, 100% { transform: translateY(0) scale(1); filter: brightness(1); }
+  50% { transform: translateY(-4px) scale(1.035); filter: brightness(1.12); }
+}
+@keyframes heat {
+  0%, 100% { opacity: .55; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+@keyframes spark {
+  0% { transform: translate(0,0) scale(1); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(28px, -70px) scale(.2); opacity: 0; }
+}
+.hud { display: flex; justify-content: space-between; padding: 8px 14px; font-weight: 800; }
+canvas { width: 100%; height: auto; display: block; background: #050202; touch-action: none; }
+.hint { text-align: center; color: #b89a90; font-size: 13px; padding: 8px 14px 24px; }
 </style>
 </head>
 <body>
-  <div class="top">
-    <img class="frog-icon" src="https://i.imgur.com/sMtcXs4.jpeg" alt="$EPEPE"/>
-    <h1>$EPE<b>PE</b></h1>
-    <div class="btns">
-      <a class="buy" href="https://pulsex.exchange/#/swap?outputCurrency=0xf646e3d650795ec693960f874b906a1b8db91c76" target="_blank" rel="noreferrer">Buy</a>
-      <a href="https://dexscreener.com/pulsechain/0x5627b7ea910e292b565f7f31824bc9018c1a804d" target="_blank" rel="noreferrer">Chart</a>
-      <a href="https://x.com/evilpepelol" target="_blank" rel="noreferrer">X</a>
-      <a href="https://t.me/evilpepelol" target="_blank" rel="noreferrer">Telegram</a>
-      <button id="copy" type="button">Copy CA</button>
+<div class="top">
+  <div class="stage">
+    <div class="glow"></div>
+    <img class="pepe" src="https://h.uguu.se/TvqnFXvY.png" alt="$EPEPE"/>
+    <div class="embers">
+      <span class="ember"></span><span class="ember"></span><span class="ember"></span>
+      <span class="ember"></span><span class="ember"></span><span class="ember"></span>
     </div>
-    <div class="ca">0xf646e3d650795ec693960f874b906a1b8db91c76</div>
   </div>
-  <div class="hud"><span>BURNED <span id="score">0</span></span><span>BEST <span id="best">0</span></span></div>
-  <canvas id="game" width="390" height="560"></canvas>
-  <p class="hint">Drag the frog. Line him up with the bags. Fire shoots by itself.</p>
+  <h1>$EPE<b>PE</b></h1>
+  <div class="btns">
+    <a class="buy" href="https://pulsex.exchange/#/swap?outputCurrency=0xf646e3d650795ec693960f874b906a1b8db91c76" target="_blank" rel="noreferrer">Buy</a>
+    <a href="https://dexscreener.com/pulsechain/0x5627b7ea910e292b565f7f31824bc9018c1a804d" target="_blank" rel="noreferrer">Chart</a>
+    <a href="https://x.com/evilpepelol" target="_blank" rel="noreferrer">X</a>
+    <a href="https://t.me/evilpepelol" target="_blank" rel="noreferrer">Telegram</a>
+    <button id="copy" type="button">Copy CA</button>
+  </div>
+  <div class="ca">0xf646e3d650795ec693960f874b906a1b8db91c76</div>
+</div>
+<div class="hud"><span>BURNED <span id="score">0</span></span><span>BEST <span id="best">0</span></span></div>
+<canvas id="game" width="390" height="560"></canvas>
+<p class="hint">Drag the frog. Line the fire up with the bags.</p>
 <script>
 var CA = "0xf646e3d650795ec693960f874b906a1b8db91c76";
+var PEPE = "https://h.uguu.se/TvqnFXvY.png";
 document.getElementById("copy").onclick = function () {
   if (navigator.clipboard) navigator.clipboard.writeText(CA);
   this.textContent = "Copied";
 };
-
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 var frogImg = new Image();
-frogImg.src = "https://i.imgur.com/sMtcXs4.jpeg";
+frogImg.src = PEPE;
 var W = 390, H = 560;
 var frog = { x: 70, y: 280 };
 var bags = [];
@@ -61,64 +110,52 @@ var best = Number(localStorage.getItem("epepeBest") || 0);
 var dragging = false;
 var tick = 0;
 document.getElementById("best").textContent = best;
-
 function size() {
   var w = Math.min(window.innerWidth, 720);
-  var h = Math.max(420, Math.floor(window.innerHeight * 0.62));
+  var h = Math.max(420, Math.floor(window.innerHeight * 0.58));
   canvas.style.width = w + "px";
   canvas.style.height = h + "px";
   canvas.width = Math.floor(w * 2);
   canvas.height = Math.floor(h * 2);
-  W = canvas.width;
-  H = canvas.height;
-  frog.x = Math.min(frog.x, W * 0.28);
+  W = canvas.width; H = canvas.height;
 }
 size();
 window.addEventListener("resize", size);
-
 function pos(e) {
   var t = e.touches ? e.touches[0] : e;
   var r = canvas.getBoundingClientRect();
-  return {
-    x: (t.clientX - r.left) * (canvas.width / r.width),
-    y: (t.clientY - r.top) * (canvas.height / r.height)
-  };
+  return { x: (t.clientX - r.left) * (canvas.width / r.width), y: (t.clientY - r.top) * (canvas.height / r.height) };
 }
 function moveFrog(p) {
-  frog.x = Math.max(W * 0.12, Math.min(W * 0.42, p.x));
-  frog.y = Math.max(H * 0.12, Math.min(H * 0.88, p.y));
+  frog.x = Math.max(W * 0.14, Math.min(W * 0.42, p.x));
+  frog.y = Math.max(H * 0.14, Math.min(H * 0.86, p.y));
 }
-canvas.addEventListener("pointerdown", function (e) { e.preventDefault(); dragging = true; moveFrog(pos(e)); canvas.setPointerCapture(e.pointerId); }, { passive: false });
-canvas.addEventListener("pointermove", function (e) { if (!dragging) return; e.preventDefault(); moveFrog(pos(e)); }, { passive: false });
+canvas.addEventListener("pointerdown", function (e) {
+  e.preventDefault(); dragging = true; moveFrog(pos(e));
+  try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
+}, { passive: false });
+canvas.addEventListener("pointermove", function (e) {
+  if (!dragging) return; e.preventDefault(); moveFrog(pos(e));
+}, { passive: false });
 canvas.addEventListener("pointerup", function () { dragging = false; });
 canvas.addEventListener("pointercancel", function () { dragging = false; });
-
 function spawn() {
-  bags.push({
-    x: W + 40,
-    y: H * (0.15 + Math.random() * 0.7),
-    v: (W / 180) + Math.random() * (W / 220),
-    r: W * 0.045
-  });
+  bags.push({ x: W + 40, y: H * (0.16 + Math.random() * 0.68), v: (W / 200) + Math.random() * (W / 260), r: W * 0.05 });
 }
-
 function loop() {
   tick++;
-  ctx.fillStyle = "#0a0404";
+  ctx.fillStyle = "#050202";
   ctx.fillRect(0, 0, W, H);
-  if (tick % 38 === 0) spawn();
-
-  var fireW = W * 0.55;
-  var fireH = H * 0.07;
+  if (tick % 42 === 0) spawn();
+  var fireW = W * 0.58, fireH = H * 0.09;
   var g = ctx.createLinearGradient(frog.x, frog.y, frog.x + fireW, frog.y);
   g.addColorStop(0, "rgba(255,230,80,.95)");
-  g.addColorStop(0.35, "rgba(255,70,10,.85)");
+  g.addColorStop(0.4, "rgba(255,70,10,.8)");
   g.addColorStop(1, "rgba(255,30,0,0)");
   ctx.fillStyle = g;
   ctx.beginPath();
-  ctx.ellipse(frog.x + fireW * 0.55, frog.y, fireW * 0.55, fireH, 0, 0, Math.PI * 2);
+  ctx.ellipse(frog.x + fireW * 0.5, frog.y + H * 0.02, fireW * 0.5, fireH, 0, 0, Math.PI * 2);
   ctx.fill();
-
   bags.forEach(function (b) {
     b.x -= b.v;
     ctx.fillStyle = "#8a5520";
@@ -126,10 +163,9 @@ function loop() {
     ctx.fillStyle = "#111"; ctx.font = Math.floor(b.r) + "px Arial";
     ctx.fillText("$", b.x - b.r * 0.35, b.y + b.r * 0.35);
   });
-
   bags = bags.filter(function (b) {
-    var inFire = b.x > frog.x && b.x < frog.x + fireW && Math.abs(b.y - frog.y) < fireH + b.r;
-    if (inFire) {
+    var hit = b.x > frog.x && b.x < frog.x + fireW && Math.abs(b.y - (frog.y + H * 0.02)) < fireH + b.r;
+    if (hit) {
       score += 697;
       document.getElementById("score").textContent = score;
       if (score > best) {
@@ -139,14 +175,11 @@ function loop() {
       }
       return false;
     }
-    return b.x > -40;
+    return b.x > -50;
   });
-
-  var size = W * 0.22;
-  if (frogImg.complete) ctx.drawImage(frogImg, frog.x - size * 0.55, frog.y - size * 0.55, size, size);
-  else {
-    ctx.fillStyle = "#2f8a3a";
-    ctx.beginPath(); ctx.arc(frog.x, frog.y, size * 0.35, 0, Math.PI * 2); ctx.fill();
+  var size = W * 0.28;
+  if (frogImg.complete && frogImg.naturalWidth) {
+    ctx.drawImage(frogImg, frog.x - size * 0.45, frog.y - size * 0.52, size, size);
   }
   requestAnimationFrame(loop);
 }
