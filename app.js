@@ -108,8 +108,9 @@ var score = 0, lives = 3, best = Number(localStorage.getItem("epepeBest") || 0);
 var dragging = false, tick = 0, state = "ready", hurt = 0, shake = 0, hitstop = 0;
 document.getElementById("best").textContent = best;
 function size() {
-  var w = Math.min(window.innerWidth, 700);
-  var h = Math.max(480, Math.floor(window.innerHeight * 0.62));
+  var parent = canvas.parentElement;
+  var w = Math.max(260, Math.min((parent && parent.clientWidth) || window.innerWidth, 700));
+  var h = Math.max(420, Math.floor(Math.min(window.innerHeight * 0.62, w * 1.35)));
   canvas.style.width = w + "px"; canvas.style.height = h + "px";
   var dpr = Math.min(2, window.devicePixelRatio || 1);
   canvas.width = Math.floor(w * dpr); canvas.height = Math.floor(h * dpr);
