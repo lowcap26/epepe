@@ -221,7 +221,7 @@ function step() {
       if (b.kind === "gem") {
         boom(b.x, b.y, true); pop(b.x, b.y - 20, "NO", "#7ee7ff"); loseLife();
       } else {
-        score += 697; boom(b.x, b.y, false); pop(b.x, b.y - 16, "+697", "#ffb020");
+        score += 369; boom(b.x, b.y, false); pop(b.x, b.y - 16, "+369", "#ffb020");
         document.getElementById("score").textContent = score;
         if (score > best) { best = score; localStorage.setItem("epepeBest", String(best)); document.getElementById("best").textContent = best; }
       }
