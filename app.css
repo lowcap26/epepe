@@ -1,0 +1,71 @@
+:root {
+  --bg: #070504;
+  --surface: #110c09;
+  --elevated: #1a120e;
+  --fg: #f3ece4;
+  --muted: #9a8b7c;
+  --fire: #ff5a00;
+  --ember: #e8a04a;
+  --acid: #5cbf6a;
+  --blood: #c43a2a;
+  --border: #3a2a20;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
+::selection { background: var(--fire); color: #1a0a00; }
+button, [role="button"] { cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+.scan {
+  pointer-events: none;
+  position: fixed; inset: 0; z-index: 40;
+  background: repeating-linear-gradient(to bottom, rgba(0,0,0,.12) 0 1px, transparent 1px 3px);
+  mix-blend-mode: multiply; opacity: .28;
+}
+.page { position: relative; z-index: 1; max-width: 44rem; margin: 0 auto; padding: 1.4rem 1rem 4rem; }
+.kicker { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+h1 { margin: .7rem 0 0; font-size: clamp(2.4rem, 10vw, 3.8rem); font-weight: 600; letter-spacing: -.02em; line-height: .95; }
+.sub { margin: .35rem 0 0; color: var(--fire); font-size: 1.15rem; }
+.lead { margin: 1rem 0 0; color: var(--muted); font-size: .9rem; line-height: 1.55; max-width: 36rem; }
+.rule { margin: .75rem 0 0; font-size: .9rem; font-weight: 500; }
+.rows { margin-top: 1.6rem; display: flex; flex-direction: column; gap: 1px; }
+.row {
+  display: flex; min-height: 2.75rem; align-items: center; justify-content: space-between; gap: .75rem;
+  border: 1px solid var(--border); background: var(--surface);
+  padding: .65rem .9rem; font-size: .72rem; letter-spacing: .04em; text-transform: uppercase;
+}
+.row:hover { border-color: var(--fire); background: var(--elevated); }
+.row span:last-child { color: var(--muted); }
+.row .hot { color: var(--fire); }
+.stats {
+  margin-top: 1.6rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  background: var(--border); border: 1px solid var(--border);
+}
+@media (min-width: 640px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+.stat { background: var(--surface); padding: .9rem 1rem; }
+.stat dt { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+.stat dd { margin: .35rem 0 0; font-size: 1.1rem; font-variant-numeric: tabular-nums; }
+.stat dd.up { color: var(--acid); }
+.stat dd.dn { color: var(--blood); }
+.note { margin: .5rem 0 0; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+h2 { margin: 2.4rem 0 .6rem; font-size: .75rem; letter-spacing: .22em; text-transform: uppercase; }
+h2 em { font-style: normal; color: var(--muted); }
+.mark { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--fire); }
+.frame { margin-top: 1rem; border: 1px solid var(--border); background: var(--surface); padding: .75rem; }
+.frame img { display: block; margin: 0 auto; max-height: 20rem; width: auto; }
+.list { margin: 1.1rem 0 0; padding: 1rem; border: 1px solid var(--border); background: var(--surface); list-style: none; font-size: .8rem; line-height: 1.7; }
+.steps { margin-top: 1.2rem; display: grid; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+@media (min-width: 640px) { .steps { grid-template-columns: repeat(4, 1fr); } }
+.steps li { background: var(--surface); padding: 1rem; list-style: none; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; }
+.steps li b { display: block; color: var(--muted); font-weight: 400; margin-bottom: .35rem; }
+.mono { word-break: break-all; font-size: .75rem; font-variant-numeric: tabular-nums; }
+.actions { margin-top: .75rem; display: flex; flex-wrap: wrap; gap: .4rem; }
+.actions .row { flex: 1 1 10rem; }
+.hud { display: flex; justify-content: space-between; gap: 8px; padding: 10px 4px 6px; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ember); }
+canvas#game { width: 100%; height: auto; display: block; background: #0d0202; touch-action: none; border: 1px solid var(--border); }
+.hint { text-align: center; color: var(--muted); font-size: .75rem; padding: .8rem 0 .4rem; letter-spacing: .06em; text-transform: uppercase; }
+.foot { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 11px; line-height: 1.5; color: var(--muted); }

@@ -15,8 +15,110 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="app.css"/>
+
 </head>
 <body>
-<p>placeholder</p>
+<div class="scan" aria-hidden="true"></div>
+<div class="page">
+  <p class="kicker">PulseChain · the incinerator started</p>
+  <h1>$EPEPE</h1>
+  <p class="sub">EVIL PEPE</p>
+  <p class="lead">Pepe watched dead bags climb out of the chart and walk again. So he grew horns, opened the throat, and started breathing fire on leftover supply.</p>
+  <p class="rule">Sold is not dead. Burned is dead. Dead bags don’t come back.</p>
+
+  <div class="rows">
+    <a class="row" href="#fire"><span>Feed the fire</span><span class="hot">0369</span></a>
+    <a class="row" href="https://pulsex.exchange/#/swap?outputCurrency=0xf646e3d650795ec693960f874b906a1b8db91c76" target="_blank" rel="noreferrer"><span>Buy on PulseX</span><span>V1 / WPLS</span></a>
+    <a class="row" href="https://t.me/evilpepelol" target="_blank" rel="noreferrer"><span>The pit</span><span>Telegram</span></a>
+    <a class="row" href="https://x.com/evilpepelol" target="_blank" rel="noreferrer"><span>The burns</span><span>@evilpepelol</span></a>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><dt>Price</dt><dd id="price">—</dd></div>
+    <div class="stat"><dt>24h</dt><dd id="chg">—</dd></div>
+    <div class="stat"><dt>Mcap</dt><dd id="mcap">—</dd></div>
+    <div class="stat"><dt>Liq</dt><dd id="liq">—</dd></div>
+  </div>
+  <p class="note">The chart · PulseX · every minute</p>
+
+  <h2><em>369 /</em> The frog</h2>
+  <p class="mark">Not a mascot. A cremation.</p>
+  <div class="frame">
+    <p class="note" style="margin:0 0 .5rem">The original. Horns on.</p>
+    <img class="pepe" src="https://h.uguu.se/TvqnFXvY.png" alt="Evil Pepe"/>
+  </div>
+  <p class="lead">On Pulse, leftover supply does not get a sequel. It goes to <span style="color:var(--fg)">0x…0369</span>. Same number as the chain. Daily 369,000. Not a tax. A cremation.</p>
+  <p class="lead">He does not pump bags. He retires them. If it can still be sold, it isn’t gone.</p>
+  <ul class="list">
+    <li>Fair launch. No tax. No team bag.</li>
+    <li>Bonded to PulseX. The pool is the pool.</li>
+    <li>Every day: 369,000 $EPEPE into the fire.</li>
+    <li>If you burn too, it counts. Same address. Same throat.</li>
+    <li>Dead bags don’t come back.</li>
+  </ul>
+
+  <h2 id="fire"><em>369 /</em> The fire</h2>
+  <p class="mark">Leftovers go in. They do not walk out.</p>
+  <p class="lead">Send $EPEPE to the burn address. That is the ritual. Do not send it to some other machine. This fire does not buy another ticker.</p>
+  <ol class="steps">
+    <li><b>1</b> The bag</li>
+    <li><b>2</b> The send</li>
+    <li><b>3</b> The breath</li>
+    <li><b>4</b> Gone</li>
+  </ol>
+  <div class="frame" style="margin-top:1.2rem">
+    <p class="note" style="margin:0 0 .5rem">Where leftover supply dies</p>
+    <p class="mono">0x0000000000000000000000000000000000000369</p>
+    <div class="actions">
+      <button class="row" type="button" id="copyburn"><span>Copy the fire</span><span></span></button>
+      <a class="row" href="https://scan.pulsechain.com/address/0x0000000000000000000000000000000000000369" target="_blank" rel="noreferrer"><span>See it on PulseScan</span><span>↗</span></a>
+    </div>
+  </div>
+  <div class="stats" style="margin-top:1.2rem">
+    <div class="stat"><dt>Already gone</dt><dd id="burned">—</dd></div>
+    <div class="stat"><dt>Daily breath</dt><dd>369,000</dd></div>
+    <div class="stat"><dt>Buys today</dt><dd id="buys">—</dd></div>
+    <div class="stat"><dt>Volume</dt><dd id="vol">—</dd></div>
+  </div>
+
+  <h2><em>— /</em> The pair</h2>
+  <p class="mark">PulseX · $EPEPE / WPLS</p>
+  <div class="frame">
+    <p class="note" style="margin:0 0 .5rem">Contract</p>
+    <p class="mono" id="ca">0xf646e3d650795ec693960f874b906a1b8db91c76</p>
+    <div class="actions">
+      <button class="row" type="button" id="copyca"><span>Copy CA</span><span></span></button>
+      <a class="row" href="https://dexscreener.com/pulsechain/0x5627b7ea910e292b565f7f31824bc9018c1a804d" target="_blank" rel="noreferrer"><span>The chart</span><span>↗</span></a>
+      <a class="row" href="https://scan.pulsechain.com/token/0xf646e3d650795ec693960f874b906a1b8db91c76" target="_blank" rel="noreferrer"><span>PulseScan</span><span>↗</span></a>
+    </div>
+  </div>
+
+  <h2><em>— /</em> What you do</h2>
+  <p class="lead">Buy if you want in. Burn if you want it gone. The official page only posts fire and receipts. Everything else is people.</p>
+  <div class="rows">
+    <a class="row" href="https://pulsex.exchange/#/swap?outputCurrency=0xf646e3d650795ec693960f874b906a1b8db91c76" target="_blank" rel="noreferrer"><span>Buy $EPEPE</span><span class="hot">PulseX</span></a>
+    <a class="row" href="#fire"><span>Feed the fire</span><span>369k a day</span></a>
+    <a class="row" href="https://t.me/evilpepelol" target="_blank" rel="noreferrer"><span>Sit in the pit</span><span>Telegram</span></a>
+    <a class="row" href="https://x.com/evilpepelol" target="_blank" rel="noreferrer"><span>Watch the burns</span><span>X</span></a>
+  </div>
+
+  <h2><em>— /</em> Drag the frog</h2>
+  <p class="mark">Practice the breath.</p>
+  <div class="hud">
+    <span>Burned <span id="score">0</span></span>
+    <span>Lives <span id="lives">3</span></span>
+    <span>Best <span id="best">0</span></span>
+  </div>
+  <canvas id="game" width="430" height="640"></canvas>
+  <p class="hint">Drag the frog. Burn the bags. 3 dumps and you’re done.</p>
+  <div class="rows" style="margin-top:.6rem">
+    <button class="row" id="share" type="button"><span>Share score</span><span></span></button>
+  </div>
+
+  <footer class="foot">$EPEPE is a PulseChain meme. Not advice. Supply that hits the fire does not walk back.</footer>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
