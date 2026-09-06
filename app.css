@@ -17,6 +17,11 @@ html, body {
   color: var(--fg);
   font-family: "IBM Plex Mono", ui-monospace, monospace;
 }
+body {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255,90,0,.16), transparent 55%),
+    var(--bg);
+}
 ::selection { background: var(--fire); color: #1a0a00; }
 button, [role="button"] { cursor: pointer; }
 a { color: inherit; text-decoration: none; }
@@ -66,6 +71,34 @@ h2 em { font-style: normal; color: var(--muted); }
 .mark { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--fire); }
 .frame { margin-top: 1rem; border: 1px solid var(--border); background: var(--surface); padding: .75rem; }
 .frame img { display: block; margin: 0 auto; max-height: 20rem; width: auto; }
+.gallery {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+@media (min-width: 640px) { .gallery { grid-template-columns: repeat(3, 1fr); } }
+.card {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  overflow: hidden;
+}
+.card img {
+  display: block;
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  background: #080605;
+}
+.card.wide { grid-column: 1 / -1; }
+.card.wide img { height: 220px; object-fit: cover; }
+.card figcaption {
+  padding: .5rem .65rem .65rem;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 .list { margin: 1.1rem 0 0; padding: 1rem; border: 1px solid var(--border); background: var(--surface); list-style: none; font-size: .8rem; line-height: 1.7; }
 .steps { margin-top: 1.2rem; display: grid; gap: 1px; background: var(--border); border: 1px solid var(--border); }
 @media (min-width: 640px) { .steps { grid-template-columns: repeat(4, 1fr); } }
