@@ -21,6 +21,18 @@ function compact(n) {
   if (n >= 1e3) return (n / 1e3).toFixed(1) + "K";
   return Math.round(n).toLocaleString();
 }
+function setChg(id, val) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  if (val == null || !isFinite(Number(val))) {
+    el.textContent = "—";
+    el.className = "";
+    return;
+  }
+  var n = Number(val);
+  el.textContent = (n >= 0 ? "+" : "") + n.toFixed(2) + "%";
+  el.className = n >= 0 ? "up" : "dn";
+}
 async function loadStats() {
   try {
     var r = await fetch("https://api.dexscreener.com/latest/dex/tokens/" + CA);
@@ -28,16 +40,14 @@ async function loadStats() {
     var p = (j.pairs || []).find(function (x) { return (x.pairAddress || "").toLowerCase() === PAIR; }) || (j.pairs || [])[0];
     if (!p) return;
     document.getElementById("price").textContent = p.priceUsd ? "$" + Number(p.priceUsd).toPrecision(4) : "—";
-    var ch = p.priceChange && p.priceChange.h24;
-    var el = document.getElementById("chg");
-    if (ch == null) el.textContent = "—";
-    else {
-      el.textContent = (ch >= 0 ? "+" : "") + ch.toFixed(2) + "%";
-      el.className = ch >= 0 ? "up" : "dn";
-    }
+    setChg("chg1h", p.priceChange && p.priceChange.h1);
+    setChg("chg", p.priceChange && p.priceChange.h24);
     document.getElementById("mcap").textContent = money(p.marketCap || p.fdv);
     document.getElementById("liq").textContent = money(p.liquidity && p.liquidity.usd);
-    document.getElementById("vol").textContent = money(p.volume && p.volume.h24);
+    var vol = money(p.volume && p.volume.h24);
+    document.getElementById("vol").textContent = vol;
+    var vt = document.getElementById("volTop");
+    if (vt) vt.textContent = vol;
     document.getElementById("buys").textContent = p.txns && p.txns.h24 && p.txns.h24.buys != null ? String(p.txns.h24.buys) : "—";
   } catch (e) {}
   try {
