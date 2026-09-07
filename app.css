@@ -55,8 +55,7 @@ html, body {
 .pile {
   position: absolute; bottom: 0;
   width: 70px; height: 78px;
-  background: url("/img/img%3Abundle.jpg") center / contain no-repeat;
-  mix-blend-mode: screen;
+  background: url("/img/bundle.png") center / contain no-repeat;
   filter: drop-shadow(0 0 8px #ff5a00);
   opacity: .9;
 }
