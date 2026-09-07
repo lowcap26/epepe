@@ -55,7 +55,7 @@ html, body {
 .pile {
   position: absolute; bottom: 0;
   width: 120px; height: 140px;
-  background: url("img/bundle.jpg") center / contain no-repeat;
+  background: url("img/img%3Abundle.jpg") center / contain no-repeat;
   filter: drop-shadow(0 0 12px #ff5a00);
   opacity: .7;
 }
