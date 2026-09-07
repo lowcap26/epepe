@@ -54,10 +54,11 @@ html, body {
 .piles { position: absolute; bottom: 3%; width: 100%; height: 90px; }
 .pile {
   position: absolute; bottom: 0;
-  width: 70px; height: 78px;
-  background: url("/img/bundle.png") center / contain no-repeat;
+  width: 78px; height: 86px;
+  background: url("/img/money%20.jpg") center / contain no-repeat;
+  mix-blend-mode: multiply;
   filter: drop-shadow(0 0 8px #ff5a00);
-  opacity: .9;
+  opacity: .95;
 }
 .p1 { left: 6%; animation: lick 3s ease-in-out infinite alternate; }
 .p2 { left: 46%; animation: lick 2.6s ease-in-out infinite alternate-reverse; }
