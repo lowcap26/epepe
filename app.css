@@ -51,17 +51,17 @@ html, body {
   from { transform: translateY(40px); }
   to { transform: translateY(-80px); }
 }
-.piles { position: absolute; bottom: 2%; width: 100%; height: 160px; }
+.piles { position: absolute; bottom: 0; width: 100%; height: 220px; }
 .pile {
-  position: absolute; bottom: 0;
-  width: 120px; height: 140px;
-  background: url("img/img%3Abundle.jpg") center / contain no-repeat;
-  filter: drop-shadow(0 0 12px #ff5a00);
-  opacity: .7;
+  position: absolute; bottom: -10px;
+  width: 200px; height: 210px;
+  background: url("/img/img%3Abundle.jpg") center 42% / 220% auto no-repeat;
+  filter: drop-shadow(0 0 14px #ff5a00);
+  opacity: .85;
 }
-.p1 { left: 2%; animation: lick 3s ease-in-out infinite alternate; }
-.p2 { left: 42%; transform: scale(1.12); animation: lick 2.6s ease-in-out infinite alternate-reverse; }
-.p3 { right: 3%; animation: lick 3.2s ease-in-out infinite alternate; }
+.p1 { left: -10px; animation: lick 3s ease-in-out infinite alternate; }
+.p2 { left: 38%; transform: scale(1.15); animation: lick 2.6s ease-in-out infinite alternate-reverse; }
+.p3 { right: -10px; animation: lick 3.2s ease-in-out infinite alternate; }
 .top {
   position: sticky; top: 0; z-index: 20;
   display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
