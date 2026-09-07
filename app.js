@@ -2,13 +2,13 @@ var CA = "0xf646e3d650795ec693960f874b906a1b8db91c76";
 var PAIR = "0x5627b7ea910e292b565f7f31824bc9018c1a804d";
 var BURN = "0x0000000000000000000000000000000000000369";
 var X_URL = "https://x.com/evilpepelol";
+var TG_URL = "https://t.me/evilpepelol";
 var PEPE = "pepe.png";
 var frogImg = new Image();
 frogImg.crossOrigin = "anonymous";
 frogImg.src = PEPE;
 var hero = document.querySelector("img.pepe");
 if (hero) hero.src = PEPE;
-
 function money(n) {
   if (n == null || !isFinite(n)) return "—";
   if (n >= 1e6) return "$" + (n / 1e6).toFixed(2) + "M";
@@ -24,11 +24,7 @@ function compact(n) {
 function setChg(id, val) {
   var el = document.getElementById(id);
   if (!el) return;
-  if (val == null || !isFinite(Number(val))) {
-    el.textContent = "—";
-    el.className = "";
-    return;
-  }
+  if (val == null || !isFinite(Number(val))) { el.textContent = "—"; el.className = ""; return; }
   var n = Number(val);
   el.textContent = (n >= 0 ? "+" : "") + n.toFixed(2) + "%";
   el.className = n >= 0 ? "up" : "dn";
@@ -59,7 +55,6 @@ async function loadStats() {
 }
 loadStats();
 setInterval(loadStats, 60000);
-
 document.getElementById("copyca").onclick = function () {
   if (navigator.clipboard) navigator.clipboard.writeText(CA);
   this.querySelector("span").textContent = "Copied";
@@ -68,7 +63,6 @@ document.getElementById("copyburn").onclick = function () {
   if (navigator.clipboard) navigator.clipboard.writeText(BURN);
   this.querySelector("span").textContent = "Copied";
 };
-
 function scoreCard() {
   var c = document.createElement("canvas");
   c.width = 1200; c.height = 675;
@@ -83,11 +77,11 @@ function scoreCard() {
   g.fillStyle = "#ff3b14"; g.font = "72px sans-serif"; g.fillText("BURNED", 70, 230);
   g.fillStyle = "#fff"; g.font = "150px sans-serif"; g.fillText(String(score), 70, 390);
   g.fillStyle = "#ffb020"; g.font = "28px sans-serif"; g.fillText("DEAD BAGS DON'T COME BACK", 70, 460);
-  g.fillStyle = "#ff5a28"; g.font = "44px sans-serif"; g.fillText("@evilpepelol", 70, 530);
+  g.fillStyle = "#ff5a28"; g.font = "36px sans-serif"; g.fillText("@evilpepelol  t.me/evilpepelol", 70, 530);
   return c;
 }
 function tweetText() {
-  return "$EPEPE burned " + score + " bags. Dead bags don't come back.\n\n@evilpepelol\n" + X_URL;
+  return "$EPEPE burned " + score + " bags. Dead bags don't come back.\n\nX " + X_URL + "\nTG " + TG_URL;
 }
 document.getElementById("share").onclick = async function () {
   var text = tweetText();
@@ -103,14 +97,13 @@ document.getElementById("share").onclick = async function () {
           await navigator.share({ files: [file], text: text, title: "$EPEPE" });
           return;
         }
-        await navigator.share({ text: text, url: X_URL, title: "$EPEPE" });
+        await navigator.share({ text: text, url: "https://evilpepe.lol", title: "$EPEPE" });
         return;
       } catch (err) { if (err && err.name === "AbortError") return; }
     }
   } catch (err) {}
-  window.open("https://x.com/intent/tweet?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(X_URL), "_blank", "noopener");
+  window.open("https://x.com/intent/tweet?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent("https://evilpepe.lol"), "_blank", "noopener");
 };
-
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 var W = 430, H = 640, frog = { x: 100, y: 320 }, things = [], sparks = [], floaters = [];
@@ -154,25 +147,12 @@ canvas.addEventListener("pointercancel", function () { dragging = false; });
 function spawn() {
   var gem = Math.random() < 0.24;
   var wave = 1 + Math.floor(score / 4500);
-  things.push({
-    kind: gem ? "gem" : "bag",
-    x: W + 40,
-    y: H * (0.16 + Math.random() * 0.68),
-    v: (W / 280) + Math.random() * (W / 300) + wave * (W / 1000),
-    r: W * (gem ? 0.042 : 0.05 + Math.random() * 0.016),
-    wob: Math.random() * 8
-  });
+  things.push({ kind: gem ? "gem" : "bag", x: W + 40, y: H * (0.16 + Math.random() * 0.68), v: (W / 280) + Math.random() * (W / 300) + wave * (W / 1000), r: W * (gem ? 0.042 : 0.05 + Math.random() * 0.016), wob: Math.random() * 8 });
 }
 function boom(x, y, gem) {
-  for (var i = 0; i < 14; i++) sparks.push({
-    x: x, y: y,
-    vx: (Math.random() - .15) * 9, vy: (Math.random() - .5) * 9,
-    life: 18 + Math.random() * 10, gem: !!gem
-  });
+  for (var i = 0; i < 14; i++) sparks.push({ x: x, y: y, vx: (Math.random() - .15) * 9, vy: (Math.random() - .5) * 9, life: 18 + Math.random() * 10, gem: !!gem });
 }
-function pop(x, y, text, color) {
-  floaters.push({ x: x, y: y, text: text, life: 42, color: color });
-}
+function pop(x, y, text, color) { floaters.push({ x: x, y: y, text: text, life: 42, color: color }); }
 function loseLife() {
   lives -= 1; hurt = 18; shake = 10; hitstop = 4;
   document.getElementById("lives").textContent = Math.max(0, lives);
@@ -202,14 +182,10 @@ function drawGem(g) {
   ctx.lineTo(-r * 0.95, -r * 0.15);
   ctx.closePath();
   var grd = ctx.createLinearGradient(-r, -r, r, r);
-  grd.addColorStop(0, "#f4ffff");
-  grd.addColorStop(0.35, "#7ee7ff");
-  grd.addColorStop(0.7, "#2aa0d8");
-  grd.addColorStop(1, "#0b4f86");
+  grd.addColorStop(0, "#f4ffff"); grd.addColorStop(0.35, "#7ee7ff"); grd.addColorStop(0.7, "#2aa0d8"); grd.addColorStop(1, "#0b4f86");
   ctx.fillStyle = grd; ctx.fill();
   ctx.strokeStyle = "#e8ffff"; ctx.lineWidth = Math.max(2, r * 0.08); ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(0, -r * 1.45); ctx.lineTo(0, r * 1.2);
+  ctx.beginPath(); ctx.moveTo(0, -r * 1.45); ctx.lineTo(0, r * 1.2);
   ctx.moveTo(-r * 0.95, -r * 0.15); ctx.lineTo(r * 0.95, -r * 0.15);
   ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.lineWidth = 2; ctx.stroke();
   ctx.fillStyle = "rgba(255,255,255,.85)";
@@ -219,7 +195,7 @@ function drawGem(g) {
 function step() {
   tick++; if (hurt > 0) hurt--; if (shake > 0) shake -= 0.55;
   var mouthX = frog.x + W * 0.1, mouthY = frog.y + H * 0.02;
-  var fireW = W * 0.66, fireH = H * 0.075 + Math.sin(tick / 3) * 6;
+  var fireW = W * 0.30, fireH = H * 0.07 + Math.sin(tick / 3) * 5;
   if (state === "play") {
     if (tick % Math.max(18, 42 - Math.floor(score / 2800)) === 0) spawn();
   }
@@ -228,19 +204,15 @@ function step() {
   things.forEach(function (b) {
     var burned = state === "play" && b.x > mouthX && b.x < mouthX + fireW && Math.abs(b.y - mouthY) < fireH + b.r * 0.85;
     if (burned) {
-      if (b.kind === "gem") {
-        boom(b.x, b.y, true); pop(b.x, b.y - 20, "NO", "#7ee7ff"); loseLife();
-      } else {
+      if (b.kind === "gem") { boom(b.x, b.y, true); pop(b.x, b.y - 20, "NO", "#7ee7ff"); loseLife(); }
+      else {
         score += 369; boom(b.x, b.y, false); pop(b.x, b.y - 16, "+369", "#ffb020");
         document.getElementById("score").textContent = score;
         if (score > best) { best = score; localStorage.setItem("epepeBest", String(best)); document.getElementById("best").textContent = best; }
       }
       return;
     }
-    if (state === "play" && b.x < W * 0.07) {
-      if (b.kind === "bag") loseLife();
-      return;
-    }
+    if (state === "play" && b.x < W * 0.07) { if (b.kind === "bag") loseLife(); return; }
     if (b.x > -80) keep.push(b);
   });
   things = keep;
@@ -257,7 +229,7 @@ function draw() {
   ctx.fillStyle = "#2a0c08"; ctx.fillRect(0, H * 0.91, W, H * 0.09);
   ctx.fillStyle = "#ff3b14"; ctx.fillRect(0, H * 0.91, W, 4);
   var mouthX = frog.x + W * 0.1, mouthY = frog.y + H * 0.02;
-  var fireW = W * 0.66, fireH = H * 0.075 + Math.sin(tick / 3) * 6;
+  var fireW = W * 0.30, fireH = H * 0.07 + Math.sin(tick / 3) * 5;
   if (state === "play") {
     var gr = ctx.createLinearGradient(mouthX, mouthY, mouthX + fireW, mouthY);
     gr.addColorStop(0, "rgba(255,245,140,1)"); gr.addColorStop(.28, "rgba(255,90,10,.95)"); gr.addColorStop(1, "rgba(255,20,0,0)");
@@ -297,10 +269,7 @@ function draw() {
 var last = performance.now(), acc = 0, STEP = 1000 / 60;
 function loop(now) {
   var raw = Math.min(100, now - last); last = now; acc += raw;
-  while (acc >= STEP) {
-    if (hitstop > 0) hitstop--; else step();
-    acc -= STEP;
-  }
+  while (acc >= STEP) { if (hitstop > 0) hitstop--; else step(); acc -= STEP; }
   draw();
   requestAnimationFrame(loop);
 }
