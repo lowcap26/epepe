@@ -55,8 +55,7 @@ html, body {
 .pile {
   position: absolute; bottom: 0;
   width: 78px; height: 86px;
-  background: url("/img/money%20.jpg") center / contain no-repeat;
-  mix-blend-mode: multiply;
+  background: url("/img/bundle.png") center / contain no-repeat;
   filter: drop-shadow(0 0 8px #ff5a00);
   opacity: .95;
 }
