@@ -172,6 +172,7 @@ h2 {
   margin: 0;
 }
 .card img { display: block; width: 100%; height: 170px; object-fit: contain; background: #120000; }
+.card img.nobg { mix-blend-mode: multiply; background: transparent; }
 .card.wide { grid-column: 1 / -1; }
 .card.wide img { height: 200px; }
 .card figcaption { padding: .5rem .65rem .7rem; font-size: 12px; font-weight: 700; color: var(--muted); }
