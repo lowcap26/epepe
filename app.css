@@ -56,8 +56,9 @@ html, body {
   position: absolute; bottom: 0;
   width: 70px; height: 78px;
   background: url("/img/img%3Abundle.jpg") center / contain no-repeat;
+  mix-blend-mode: screen;
   filter: drop-shadow(0 0 8px #ff5a00);
-  opacity: .7;
+  opacity: .9;
 }
 .p1 { left: 6%; animation: lick 3s ease-in-out infinite alternate; }
 .p2 { left: 46%; animation: lick 2.6s ease-in-out infinite alternate-reverse; }
