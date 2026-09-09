@@ -1,4 +1,4 @@
-var SITE = "https://evilpepe.lol/";
+var SITE = "https://evilpepe.lol/pit.html";
 var TG_URL = "https://t.me/evilpepelol";
 
 function tweetText() {
