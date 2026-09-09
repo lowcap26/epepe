@@ -37,12 +37,37 @@ function scoreCard() {
   return c;
 }
 
-function downloadCard(blob) {
-  var a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "epepe-score.png";
-  a.click();
-  setTimeout(function () { URL.revokeObjectURL(a.href); }, 1500);
+function showCard(blob) {
+  var old = document.getElementById("scoreShare");
+  if (old) old.remove();
+  var wrap = document.createElement("div");
+  wrap.id = "scoreShare";
+  wrap.style.cssText = "position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:12px";
+  var img = document.createElement("img");
+  img.src = URL.createObjectURL(blob);
+  img.alt = "score";
+  img.style.cssText = "width:min(100%,720px);border:2px solid #ff3b14;border-radius:8px";
+  var note = document.createElement("p");
+  note.textContent = "Long-press the card → Save Image, then attach it on X";
+  note.style.cssText = "color:#ffe7a0;font:700 16px sans-serif;text-align:center;margin:0";
+  var row = document.createElement("div");
+  row.style.cssText = "display:flex;gap:10px;flex-wrap:wrap;justify-content:center";
+  function btn(label, fn) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = label;
+    b.style.cssText = "background:#ff3b14;color:#fff;border:0;padding:12px 16px;font:700 16px sans-serif;border-radius:6px";
+    b.onclick = fn;
+    return b;
+  }
+  row.appendChild(btn("Post on X", function () {
+    window.open("https://x.com/intent/tweet?text=" + encodeURIComponent(tweetText()) + "&url=" + encodeURIComponent(SITE), "_blank", "noopener");
+  }));
+  row.appendChild(btn("Close", function () { wrap.remove(); }));
+  wrap.appendChild(img);
+  wrap.appendChild(note);
+  wrap.appendChild(row);
+  document.body.appendChild(wrap);
 }
 
 var shareBtn = document.getElementById("share");
@@ -57,7 +82,8 @@ if (shareBtn) {
         } catch (err) { rej(err); }
       });
     } catch (err) {}
-    if (blob && navigator.share) {
+    var isTouch = window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0;
+    if (blob && navigator.share && !isTouch) {
       try {
         var file = new File([blob], "epepe-score.png", { type: "image/png" });
         if (!navigator.canShare || navigator.canShare({ files: [file] })) {
@@ -68,11 +94,9 @@ if (shareBtn) {
         if (err && err.name === "AbortError") return;
       }
     }
-    if (blob) downloadCard(blob);
-    window.open(
-      "https://x.com/intent/tweet?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(SITE),
-      "_blank",
-      "noopener"
-    );
+    if (blob) showCard(blob);
+    else {
+      window.open("https://x.com/intent/tweet?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(SITE), "_blank", "noopener");
+    }
   };
 }
