@@ -2,7 +2,7 @@ var SITE = "https://evilpepe.lol/";
 var TG_URL = "https://t.me/evilpepelol";
 
 function tweetText() {
-  return "$EPEPE burned " + score + " bags.\nDead bags don't come back.\n\n" + TG_URL + "\n@evilpepelol";
+  return "@evilpepelol\nscored " + score + " in THE PIT. not a token burn — just the game.\n" + SITE + "\n" + TG_URL;
 }
 
 function scoreCard() {
@@ -23,17 +23,20 @@ function scoreCard() {
   g.font = "bold 42px sans-serif";
   g.fillText("$EPEPE", 70, 90);
   g.fillStyle = "#ff3b14";
-  g.font = "bold 72px sans-serif";
-  g.fillText("BURNED", 70, 230);
+  g.font = "bold 64px sans-serif";
+  g.fillText("THE PIT", 70, 210);
+  g.fillStyle = "#fff";
+  g.font = "bold 44px sans-serif";
+  g.fillText("SCORE", 70, 280);
   g.fillStyle = "#fff";
   g.font = "bold 150px sans-serif";
-  g.fillText(String(score), 70, 390);
+  g.fillText(String(score), 70, 430);
   g.fillStyle = "#ffb020";
-  g.font = "bold 28px sans-serif";
-  g.fillText("DEAD BAGS DON'T COME BACK", 70, 460);
+  g.font = "bold 26px sans-serif";
+  g.fillText("GAME SCORE. NOT THE TOKEN BURN.", 70, 500);
   g.fillStyle = "#ff5a28";
-  g.font = "bold 32px sans-serif";
-  g.fillText("t.me/evilpepelol   @evilpepelol", 70, 530);
+  g.font = "bold 28px sans-serif";
+  g.fillText("@evilpepelol", 70, 560);
   return c;
 }
 
@@ -61,7 +64,7 @@ function showCard(blob) {
     return b;
   }
   row.appendChild(btn("Post on X", function () {
-    window.open("https://x.com/intent/tweet?text=" + encodeURIComponent(tweetText()) + "&url=" + encodeURIComponent(SITE), "_blank", "noopener");
+    window.open("https://x.com/intent/tweet?text=" + encodeURIComponent(tweetText()), "_blank", "noopener");
   }));
   row.appendChild(btn("Close", function () { wrap.remove(); }));
   wrap.appendChild(img);
@@ -85,9 +88,9 @@ if (shareBtn) {
     var isTouch = window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0;
     if (blob && navigator.share && !isTouch) {
       try {
-        var file = new File([blob], "epepe-score.png", { type: "image/png" });
+        var file = new File([blob], "epepe-pit-score.png", { type: "image/png" });
         if (!navigator.canShare || navigator.canShare({ files: [file] })) {
-          await navigator.share({ files: [file], text: text + "\n" + SITE, title: "$EPEPE" });
+          await navigator.share({ files: [file], text: text, title: "$EPEPE THE PIT" });
           return;
         }
       } catch (err) {
@@ -96,7 +99,7 @@ if (shareBtn) {
     }
     if (blob) showCard(blob);
     else {
-      window.open("https://x.com/intent/tweet?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(SITE), "_blank", "noopener");
+      window.open("https://x.com/intent/tweet?text=" + encodeURIComponent(text), "_blank", "noopener");
     }
   };
 }
