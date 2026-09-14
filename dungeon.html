@@ -116,10 +116,10 @@
     return img;
   }
   const sheets = {
-    idle: loadImg("game/player-idle.png?v=7"),
-    walk: loadImg("game/player-walk.png?v=7"),
-    attack: loadImg("game/player-attack.png?v=7"),
-    shoot: loadImg("game/player-shoot.png?v=7"),
+    idle: loadImg("game/player-idle.png?v=9"),
+    walk: loadImg("game/player-walk.png?v=9"),
+    attack: loadImg("game/player-attack.png?v=9"),
+    shoot: loadImg("game/player-shoot.png?v=9"),
     jeetB: loadImg("game/jeet-blue.png?v=4"),
     jeetS: loadImg("game/jeet-suit.png?v=4"),
     fire: loadImg("game/fireball.png?v=4"),
@@ -496,7 +496,9 @@
     const ch = Math.floor(img.naturalHeight / rows);
     const col = i % cols;
     const row = Math.floor(i / cols);
-    const pad = 1;
+    const pad = 2;
+    const prevSmooth = ctx.imageSmoothingEnabled;
+    ctx.imageSmoothingEnabled = false;
     ctx.save();
     if (flip) {
       ctx.translate(dx + dw, dy);
@@ -506,6 +508,7 @@
       ctx.drawImage(img, col * cw + pad, row * ch + pad, cw - pad * 2, ch - pad * 2, dx, dy, dw, dh);
     }
     ctx.restore();
+    ctx.imageSmoothingEnabled = prevSmooth;
     return true;
   }
   function draw() {
@@ -583,31 +586,23 @@
 
     const moving = Math.hypot(player.vx, player.vy) > 0.4;
     const dirRow = player.facing === "down" ? 0 : player.facing === "left" ? 1 : player.facing === "right" ? 2 : 3;
-    let img = sheets.idle, cols = 2, rows = 2, fi = 0, bob = 0, flip = false;
+    let img = sheets.walk, cols = 4, rows = 4, fi = dirRow * 4, bob = 0;
     if (pokeT > 0) {
       img = sheets.attack;
-      fi = pokeT > 14 ? 0 : pokeT > 10 ? 1 : pokeT > 5 ? 2 : 3;
-      flip = player.facing === "left";
+      const step = pokeT > 14 ? 0 : pokeT > 10 ? 1 : pokeT > 5 ? 2 : 3;
+      fi = dirRow * 4 + step;
     } else if (shootT > 0) {
       img = sheets.shoot;
-      fi = shootT > 20 ? 0 : shootT > 14 ? 1 : shootT > 8 ? 2 : 3;
-      flip = player.facing === "left";
-    } else if (moving) {
-      img = sheets.walk;
-      cols = 4; rows = 4;
-      const step = Math.floor(walkAcc / 16) % 4;
+      const step = shootT > 20 ? 0 : shootT > 14 ? 1 : shootT > 8 ? 2 : 3;
       fi = dirRow * 4 + step;
-      bob = step % 2 === 1 ? -3 : 0;
-    } else if (player.facing === "down") {
-      img = sheets.idle;
-      fi = frame % 210 < 12 ? 1 : 0;
-    } else {
-      img = sheets.walk;
-      cols = 4; rows = 4;
-      fi = dirRow * 4;
+    } else if (moving) {
+      const cycle = [0, 1, 2, 3, 2, 1];
+      const step = cycle[Math.floor(walkAcc / 10) % 6];
+      fi = dirRow * 4 + step;
+      bob = step % 2 === 1 ? -2 : 0;
     }
     if (invuln % 6 < 3 || invuln === 0) {
-      sheetFrame(img, cols, rows, fi, Math.round(player.x) - 14, Math.round(player.y) - 22 + bob, 64, 70, flip);
+      sheetFrame(img, cols, rows, fi, Math.round(player.x) - 14, Math.round(player.y) - 22 + bob, 64, 70, false);
     }
 
     sparks.forEach((s) => {
