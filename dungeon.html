@@ -109,8 +109,25 @@
   const pads = document.getElementById("pads");
   const stickEl = document.getElementById("stick");
   const knob = document.getElementById("knob");
-  const pepe = new Image();
-  pepe.src = "pepe.png";
+  function loadImg(src) {
+    const img = new Image();
+    img.src = src;
+    return img;
+  }
+  const sheets = {
+    idle: loadImg("game/player-idle.png"),
+    walk: loadImg("game/player-walk.png"),
+    attack: loadImg("game/player-attack.png"),
+    shoot: loadImg("game/player-shoot.png"),
+    jeetB: loadImg("game/jeet-blue.png"),
+    jeetS: loadImg("game/jeet-suit.png"),
+    fire: loadImg("game/fireball.png"),
+    coin: loadImg("game/coin.png"),
+    chest: loadImg("game/chest.png"),
+    altar: loadImg("game/altar.png"),
+    floor: loadImg("game/floor.png"),
+    wall: loadImg("game/wall.png"),
+  };
 
   function todaySeed() {
     const d = new Date();
@@ -445,76 +462,25 @@
     sparks = sparks.filter((s) => s.life > 0);
   }
 
-  function roundRect(x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
+  function ready(img) {
+    return img.complete && img.naturalWidth > 8;
   }
-  function drawBag(x, y) {
-    ctx.fillStyle = "#3d9b4a";
-    roundRect(x, y + 4, 20, 16, 3); ctx.fill();
-    ctx.fillStyle = "#2a6b34";
-    ctx.fillRect(x + 6, y, 8, 6);
-    ctx.fillStyle = "#ffe27a";
-    ctx.font = "bold 9px sans-serif";
-    ctx.fillText("$", x + 7, y + 16);
-  }
-  function drawChest(x, y) {
-    ctx.fillStyle = "#7a3b1a";
-    roundRect(x, y, 36, 26, 3); ctx.fill();
-    ctx.fillStyle = "#e8a04a";
-    ctx.fillRect(x + 2, y + 10, 32, 4);
-    ctx.fillStyle = "#ffe27a";
-    ctx.beginPath(); ctx.arc(x + 18, y + 12, 4, 0, 7); ctx.fill();
-  }
-  function drawJeet(j) {
-    const x = j.x, y = j.y;
-    if (j.kind === "suit") {
-      ctx.fillStyle = "#111";
-      roundRect(x + 6, y + 18, 22, 20, 3); ctx.fill();
-      ctx.fillStyle = "#eee";
-      ctx.fillRect(x + 14, y + 18, 6, 14);
+  function sheetFrame(img, cols, rows, i, dx, dy, dw, dh, flip) {
+    if (!ready(img)) return false;
+    const cw = img.naturalWidth / cols;
+    const ch = img.naturalHeight / rows;
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    ctx.save();
+    if (flip) {
+      ctx.translate(dx + dw, dy);
+      ctx.scale(-1, 1);
+      ctx.drawImage(img, col * cw, row * ch, cw, ch, 0, 0, dw, dh);
     } else {
-      ctx.fillStyle = "#2a5ca8";
-      roundRect(x + 6, y + 18, 22, 20, 3); ctx.fill();
+      ctx.drawImage(img, col * cw, row * ch, cw, ch, dx, dy, dw, dh);
     }
-    ctx.fillStyle = "#6dbf4a";
-    ctx.beginPath(); ctx.ellipse(x + 17, y + 14, 13, 12, 0, 0, 7); ctx.fill();
-    ctx.fillStyle = "#111";
-    ctx.fillRect(x + 10, y + 12, 4, 4);
-    ctx.fillRect(x + 20, y + 12, 4, 4);
-    ctx.fillStyle = "#c43a2a";
-    ctx.fillRect(x + 13, y + 18, 8, 2);
-  }
-  function drawPlayer() {
-    const x = player.x - 6, y = player.y - 10;
-    if (invuln % 6 < 3 || invuln === 0) {
-      if (pepe.complete && pepe.naturalWidth) {
-        ctx.save();
-        if (player.facing === "left") {
-          ctx.translate(x + 44, y);
-          ctx.scale(-1, 1);
-          ctx.drawImage(pepe, 0, 0, 44, 50);
-        } else {
-          ctx.drawImage(pepe, x, y, 44, 50);
-        }
-        ctx.restore();
-      } else {
-        ctx.fillStyle = "#ff2a1a";
-        ctx.beginPath(); ctx.ellipse(x + 22, y + 28, 14, 18, 0, 0, 7); ctx.fill();
-        ctx.fillStyle = "#6dbf4a";
-        ctx.beginPath(); ctx.ellipse(x + 22, y + 16, 16, 14, 0, 0, 7); ctx.fill();
-      }
-    }
-    if (pokeT > 8) {
-      const d = vecFromFacing();
-      ctx.fillStyle = "#ff5a00";
-      ctx.fillRect(player.x + player.w / 2 + d.x * 22 - 6, player.y + 12 + d.y * 16, 12, 12);
-    }
+    ctx.restore();
+    return true;
   }
   function draw() {
     const wrap = canvas.parentElement;
@@ -533,20 +499,22 @@
       for (let x = 0; x < COLS; x++) {
         const t = room.map[y][x], dx = x * TILE, dy = y * TILE;
         if (t === 1) {
-          ctx.fillStyle = "#4a1510";
-          ctx.fillRect(dx, dy, TILE, TILE);
-          ctx.fillStyle = "#2a0c0a";
-          ctx.fillRect(dx + 2, dy + 2, TILE - 4, TILE - 4);
-          ctx.strokeStyle = "#6b2218";
-          ctx.strokeRect(dx + 6, dy + 8, TILE - 12, 8);
+          if (ready(sheets.wall)) ctx.drawImage(sheets.wall, dx, dy, TILE, TILE);
+          else {
+            ctx.fillStyle = "#4a1510";
+            ctx.fillRect(dx, dy, TILE, TILE);
+          }
         } else if (t === 2) {
           ctx.fillStyle = "#0a0608";
           ctx.fillRect(dx, dy, TILE, TILE);
           ctx.fillStyle = "#6b21a8";
           ctx.beginPath(); ctx.ellipse(dx + 24, dy + 28, 14, 10, 0, 0, 7); ctx.fill();
         } else {
-          ctx.fillStyle = (x + y) % 2 ? "#2a1814" : "#231410";
-          ctx.fillRect(dx, dy, TILE, TILE);
+          if (ready(sheets.floor)) ctx.drawImage(sheets.floor, dx, dy, TILE, TILE);
+          else {
+            ctx.fillStyle = (x + y) % 2 ? "#2a1814" : "#231410";
+            ctx.fillRect(dx, dy, TILE, TILE);
+          }
           if (t === 3) {
             ctx.fillStyle = "rgba(255,90,0,0.28)";
             ctx.fillRect(dx, dy, TILE, TILE);
@@ -556,35 +524,55 @@
     }
 
     if (room.altar) {
-      const ax = 9 * TILE, ay = 4 * TILE;
-      ctx.fillStyle = "#3f3f46";
-      ctx.fillRect(ax, ay + 10, 40, 38);
-      ctx.fillStyle = "#ff7a18";
-      ctx.beginPath();
-      ctx.moveTo(ax + 8, ay + 14);
-      ctx.lineTo(ax + 20, ay - 16 - Math.sin(frame / 6) * 4);
-      ctx.lineTo(ax + 32, ay + 14);
-      ctx.fill();
-      ctx.fillStyle = "#ffe27a";
-      ctx.beginPath();
-      ctx.moveTo(ax + 14, ay + 12);
-      ctx.lineTo(ax + 20, ay - 6);
-      ctx.lineTo(ax + 26, ay + 12);
-      ctx.fill();
-      ctx.fillStyle = "#f3ece4";
-      ctx.font = "9px ui-monospace, monospace";
-      ctx.fillText("0369", ax + 6, ay + 34);
+      if (ready(sheets.altar)) ctx.drawImage(sheets.altar, 8.6 * TILE, 3.4 * TILE, 56, 64);
+      else {
+        ctx.fillStyle = "#3f3f46";
+        ctx.fillRect(9 * TILE, 4 * TILE, 40, 48);
+        ctx.fillStyle = "#ff7a18";
+        ctx.fillRect(9 * TILE + 12, 4 * TILE - 10, 16, 12);
+      }
     }
 
-    room.coins.forEach((c) => c.kind === "chest" ? drawChest(c.x, c.y) : drawBag(c.x, c.y));
-    room.jeets.forEach(drawJeet);
-    shots.forEach((s) => {
-      ctx.fillStyle = "#ff7a18";
-      ctx.beginPath(); ctx.arc(s.x, s.y, 7, 0, 7); ctx.fill();
-      ctx.fillStyle = "#ffe27a";
-      ctx.beginPath(); ctx.arc(s.x, s.y, 3, 0, 7); ctx.fill();
+    room.coins.forEach((c) => {
+      const img = c.kind === "chest" ? sheets.chest : sheets.coin;
+      if (ready(img)) ctx.drawImage(img, c.x, c.y, c.kind === "chest" ? 40 : 24, c.kind === "chest" ? 32 : 22);
     });
-    drawPlayer();
+
+    room.jeets.forEach((j) => {
+      const img = j.kind === "suit" ? sheets.jeetS : sheets.jeetB;
+      const fi = Math.floor(frame / 8) % 4;
+      if (j.hurt) ctx.filter = "brightness(2)";
+      sheetFrame(img, 2, 2, fi, j.x, j.y, 40, 44, j.facing === "left");
+      ctx.filter = "none";
+    });
+
+    shots.forEach((s) => {
+      const fi = Math.floor(frame / 4) % 4;
+      if (!sheetFrame(sheets.fire, 2, 2, fi, s.x - 12, s.y - 12, 24, 24)) {
+        ctx.fillStyle = "#ff7a18";
+        ctx.beginPath(); ctx.arc(s.x, s.y, 7, 0, 7); ctx.fill();
+      }
+    });
+
+    const moving = Math.hypot(player.vx, player.vy) > 0.4;
+    const flip = player.facing === "left";
+    let img = sheets.idle, cols = 2, rows = 2, fi = Math.floor(frame / 10) % 4;
+    if (pokeT > 0) {
+      img = sheets.attack;
+      fi = pokeT > 12 ? 0 : pokeT > 6 ? 1 : 2;
+    } else if (shootT > 16) {
+      img = sheets.shoot;
+      fi = 1;
+    } else if (moving) {
+      img = sheets.walk;
+      cols = 4; rows = 4;
+      const row = player.facing === "down" ? 0 : player.facing === "left" ? 1 : player.facing === "right" ? 2 : 3;
+      fi = row * 4 + (Math.floor(frame / 6) % 4);
+    }
+    if (invuln % 6 < 3 || invuln === 0) {
+      sheetFrame(img, cols, rows, fi, player.x - 6, player.y - 10, 44, 50, flip && img !== sheets.walk);
+    }
+
     sparks.forEach((s) => {
       ctx.globalAlpha = s.life / 18;
       ctx.fillStyle = s.c;
