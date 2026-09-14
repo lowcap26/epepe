@@ -116,10 +116,10 @@
     return img;
   }
   const sheets = {
-    idle: loadImg("game/player-idle.png?v=5"),
-    walk: loadImg("game/player-walk.png?v=5"),
-    attack: loadImg("game/player-attack.png?v=5"),
-    shoot: loadImg("game/player-shoot.png?v=5"),
+    idle: loadImg("game/player-idle.png?v=6"),
+    walk: loadImg("game/player-walk.png?v=6"),
+    attack: loadImg("game/player-attack.png?v=6"),
+    shoot: loadImg("game/player-shoot.png?v=6"),
     jeetB: loadImg("game/jeet-blue.png?v=4"),
     jeetS: loadImg("game/jeet-suit.png?v=4"),
     fire: loadImg("game/fireball.png?v=4"),
@@ -394,7 +394,7 @@
       if (moved > 0) {
         walkAcc += moved;
         player.vx = dx * STEP_PX; player.vy = dy * STEP_PX;
-        if ((Math.floor(walkAcc / 12) % 2) === 1 && dustCool <= 0) {
+        if ((Math.floor(walkAcc / 16) % 2) === 1 && dustCool <= 0) {
           sparks.push({ x: player.x + player.w / 2 + (Math.random() * 6 - 3), y: player.y + player.h - 2, vx: -dx * 0.4, vy: 0.4, life: 10, c: "#6b4a32" });
           dustCool = 9;
         }
@@ -593,12 +593,12 @@
       img = sheets.walk;
       cols = 4; rows = 4;
       const row = player.facing === "down" ? 0 : player.facing === "left" ? 1 : player.facing === "right" ? 2 : 3;
-      const step = Math.floor(walkAcc / 12) % 4;
+      const step = Math.floor(walkAcc / 16) % 4;
       fi = row * 4 + step;
-      bob = step % 2 === 1 ? -2 : 0;
+      bob = step % 2 === 1 ? -3 : 0;
     }
     if (invuln % 6 < 3 || invuln === 0) {
-      sheetFrame(img, cols, rows, fi, Math.round(player.x) - 8, Math.round(player.y) - 12 + bob, 48, 52, flip && img !== sheets.walk);
+      sheetFrame(img, cols, rows, fi, Math.round(player.x) - 14, Math.round(player.y) - 22 + bob, 64, 70, flip && img !== sheets.walk);
     }
 
     sparks.forEach((s) => {
