@@ -62,8 +62,11 @@
     <div>THE PIT: <span style="color:var(--fire)">DUNGEON</span></div>
     <div class="hud">
       <span>HP <b id="hp">3</b></span>
+      <span>KEY <b id="keyn">0</b></span>
       <span class="sup">SUPPLY <b id="held">0</b></span>
       <span class="ash">ASH <b id="ash">0</b></span>
+      <span>A TRIDENT</span>
+      <span id="slotb">B —</span>
     </div>
     <a href="./">Site</a>
   </header>
@@ -71,13 +74,13 @@
     <canvas id="c"></canvas>
     <div class="overlay" id="overlay">
       <div class="card">
-        <p class="kicker">0369 quest</p>
-        <h1 id="title">THE PIT: DUNGEON</h1>
-        <p class="blurb" id="blurb">Collect supply. Jeets chase harder the more you hold. Walk the altar to ash it. Game score — not the token burn.</p>
+        <p class="kicker">the pit</p>
+        <h1 id="title">DUNGEON I</h1>
+        <p class="blurb" id="blurb">Trident is yours. Find the Pit Key, the Map, and Hellfire. Put down the Jeet King. Walk 0369 to ash the bag.</p>
         <p class="mod" id="mod"></p>
         <p class="seed" id="seed"></p>
         <button class="start" id="start" type="button">Start run</button>
-        <p class="keys">WASD move · J poke · K fireball</p>
+        <p class="keys">WASD move · J / Space trident · K fireball</p>
       </div>
     </div>
     <div class="pads" id="pads">
@@ -116,10 +119,10 @@
     return img;
   }
   const sheets = {
-    idle: loadImg("game/player-idle.png?v=11"),
-    walk: loadImg("game/player-walk.png?v=11"),
-    attack: loadImg("game/player-attack.png?v=11"),
-    shoot: loadImg("game/player-shoot.png?v=11"),
+    idle: loadImg("game/player-idle.png?v=15"),
+    walk: loadImg("game/player-walk.png?v=15"),
+    attack: loadImg("game/player-attack.png?v=15"),
+    shoot: loadImg("game/player-shoot.png?v=15"),
     jeetB: loadImg("game/jeet-blue.png?v=4"),
     jeetS: loadImg("game/jeet-suit.png?v=4"),
     fire: loadImg("game/fireball.png?v=4"),
@@ -128,6 +131,10 @@
     altar: loadImg("game/altar.png?v=4"),
     floor: loadImg("game/floor.png"),
     wall: loadImg("game/wall.png"),
+    key: loadImg("game/item-key.png"),
+    heart: loadImg("game/item-heart.png"),
+    hellfire: loadImg("game/item-hellfire.png"),
+    map: loadImg("game/item-map.png"),
   };
 
   function todaySeed() {
@@ -158,24 +165,48 @@
     if (side === "up") { m[0][mx] = 3; m[0][mx - 1] = 3; }
     if (side === "down") { m[ROWS - 1][mx] = 3; m[ROWS - 1][mx - 1] = 3; }
   }
-  function coin(x, y, v) { return { x: x * TILE + 14, y: y * TILE + 14, v, kind: "coin" }; }
-  function jeet(x, y, kind, facing) {
-    return { x: x * TILE, y: y * TILE, w: 34, h: 38, vx: 0, vy: 0, facing: facing || "down", kind, hurt: 0 };
+  function carveLocked(m, side) {
+    carveDoor(m, side);
+    const mx = Math.floor(COLS / 2), my = Math.floor(ROWS / 2);
+    if (side === "left") { m[my][0] = 4; m[my - 1][0] = 4; }
+    if (side === "right") { m[my][COLS - 1] = 4; m[my - 1][COLS - 1] = 4; }
   }
-  function buildRun(seed) {
-    const rng = mulberry(seed);
-    const start = emptyMap(), loot = emptyMap(), fight = emptyMap(), altar = emptyMap();
-    carveDoor(start, "right"); carveDoor(start, "up"); carveDoor(start, "down");
-    carveDoor(loot, "down"); carveDoor(fight, "up"); carveDoor(altar, "left");
-    [[3,4],[3,8],[7,5],[8,9]].forEach(([y,x]) => {
-      if (rng() > 0.35) fight[y][x] = 2;
-      if (rng() > 0.7) loot[y][x] = 2;
-    });
+  function addCells(m, cells, t) {
+    cells.forEach(([y, x]) => { if (y > 0 && y < ROWS - 1 && x > 0 && x < COLS - 1) m[y][x] = t; });
+  }
+  function foe(kind, tx, ty) {
+    const boss = kind === "boss";
+    const hp = boss ? 8 : kind === "suit" ? 3 : 2;
+    return { x: tx * TILE + (boss ? 4 : 8), y: ty * TILE + (boss ? 2 : 6), w: boss ? 52 : 34, h: boss ? 56 : 38, vx: 0, vy: 0, facing: "down", hp, maxHp: hp, kind, hurt: 0 };
+  }
+  function loot(kind, tx, ty, v) {
+    return { x: tx * TILE + 10, y: ty * TILE + 10, v: v || 0, kind };
+  }
+  function buildDungeon() {
+    const enter = emptyMap(), hall = emptyMap(), hub = emptyMap(), keyR = emptyMap();
+    const mapR = emptyMap(), gate = emptyMap(), boss = emptyMap(), sanctum = emptyMap();
+    carveDoor(enter, "up");
+    carveDoor(hall, "down"); carveDoor(hall, "up");
+    carveDoor(hub, "down"); carveDoor(hub, "up"); carveDoor(hub, "left"); carveLocked(hub, "right");
+    carveDoor(keyR, "right");
+    carveDoor(mapR, "down");
+    carveLocked(gate, "left"); carveDoor(gate, "right");
+    carveDoor(boss, "left"); carveDoor(boss, "up");
+    carveDoor(sanctum, "down");
+    addCells(hall, [[3,3],[3,9],[7,3],[7,9]], 2);
+    addCells(hub, [[3,3],[3,9],[7,3],[7,9]], 1);
+    addCells(keyR, [[4,4],[6,4]], 2);
+    addCells(gate, [[2,6],[8,6],[4,3],[6,9]], 1);
+    addCells(boss, [[2,2],[2,10],[8,2],[8,10]], 2);
     return {
-      start: { id: "start", map: start, coins: [coin(3,3,80), coin(9,7,80), coin(6,5,120)], jeets: [], links: { right: "altar", up: "loot", down: "fight" } },
-      loot: { id: "loot", map: loot, coins: [coin(4,4,150), coin(8,4,150)], jeets: [], links: { down: "start" } },
-      fight: { id: "fight", map: fight, coins: [coin(6,5,200)], jeets: [jeet(9,3,"blue"), jeet(3,7,"suit")], links: { up: "start" } },
-      altar: { id: "altar", map: altar, coins: [coin(4,8,80)], jeets: [jeet(8,3,"blue","left")], altar: true, links: { left: "start" } },
+      enter: { id: "enter", name: "Mouth of the Pit", gx: 1, gy: 0, map: enter, coins: [loot("coin",4,4,40), loot("coin",8,6,40), loot("chest",10,3,80)], jeets: [foe("blue",9,7)], links: { up: "hall" } },
+      hall: { id: "hall", name: "Jeet Hall", gx: 1, gy: 1, map: hall, coins: [loot("coin",6,5,60)], jeets: [foe("blue",3,4), foe("suit",9,6)], links: { down: "enter", up: "hub" } },
+      hub: { id: "hub", name: "Cross of Horns", gx: 1, gy: 2, map: hub, coins: [loot("coin",6,5,50)], jeets: [foe("blue",6,3)], links: { down: "hall", up: "maps", left: "keys", right: "gate" }, locked: { right: true } },
+      keys: { id: "keys", name: "Key Chamber", gx: 0, gy: 2, map: keyR, coins: [loot("key",4,5), loot("coin",8,3,70)], jeets: [foe("suit",7,7), foe("blue",3,3)], links: { right: "hub" } },
+      maps: { id: "maps", name: "Cartographer's Niche", gx: 1, gy: 3, map: mapR, coins: [loot("map",4,4), loot("hellfire",8,4), loot("heart",6,7)], jeets: [foe("blue",10,6)], links: { down: "hub" } },
+      gate: { id: "gate", name: "Sealed Walk", gx: 2, gy: 2, map: gate, coins: [loot("coin",6,8,90)], jeets: [foe("suit",6,4)], links: { left: "hub", right: "boss" }, locked: { left: true } },
+      boss: { id: "boss", name: "Throne of the Jeet King", gx: 3, gy: 2, map: boss, coins: [], jeets: [foe("boss",6,4)], links: { left: "gate", up: "sanctum" } },
+      sanctum: { id: "sanctum", name: "Altar 0369", gx: 3, gy: 3, map: sanctum, coins: [loot("heart",3,5), loot("chest",9,5,200)], jeets: [], altar: true, links: { down: "boss" } },
     };
   }
   function aabb(a, b) {
@@ -183,60 +214,52 @@
   }
 
   let phase = "ready";
-  let seed = todaySeed();
-  let rooms = buildRun(seed);
-  let roomId = "start";
+  let rooms = buildDungeon();
+  let roomId = "enter";
   let room = rooms[roomId];
-  const player = { x: 2 * TILE, y: 5 * TILE, w: 28, h: 34, vx: 0, vy: 0, facing: "right", hurt: 0 };
+  const visited = new Set(["enter"]);
+  const player = { x: 6 * TILE, y: 8 * TILE, w: 28, h: 34, vx: 0, vy: 0, facing: "up", hurt: 0 };
   let shots = [], sparks = [];
   let held = 0, lives = 3, ash = 0, lastBurn = 0;
   let invuln = 0, pokeT = 0, shootT = 0, shake = 0, hitstop = 0, frame = 0;
+  let invKeys = 0, invFire = false, invMap = false;
+  let toastMsg = "", toastT = 0;
   let magnet = false, heatMul = 1, valueMul = 1, modId = "heat";
-  let pendingMod = MODS[0];
   const keys = new Set();
   const stick = { x: 0, y: 0 };
-  let lastCardinal = "right";
-  let walkAcc = 0, lastFacing = "right", dustCool = 0;
-  let aimX = 1, aimY = 0;
+  let lastCardinal = "up";
+  let walkAcc = 0, lastFacing = "up", dustCool = 0;
+  let aimX = 0, aimY = -1;
   let last = performance.now(), acc = 0, raf = 0, running = true;
   let pointerId = null;
 
   try { ash = Number(localStorage.getItem(ASH_KEY) || 0); } catch (e) {}
-  document.getElementById("ash").textContent = ash;
 
-  function rollMod() {
-    pendingMod = MODS[Math.floor(Math.random() * MODS.length)];
-    document.getElementById("mod").textContent = pendingMod.label;
-  }
-  rollMod();
-  document.getElementById("seed").textContent = "seed " + seed;
+  function note(msg) { toastMsg = msg; toastT = 120; }
 
-  function applyMod(id) {
-    magnet = false; heatMul = 1; valueMul = 1; lives = 3;
-    if (id === "heat") heatMul = 1.35;
-    if (id === "greedy") { valueMul = 2; heatMul = 1.2; }
-    if (id === "thin") { lives = 1; valueMul = 2; }
-    if (id === "magnet") magnet = true;
-    if (id === "calm") heatMul = 0.7;
-    hud();
-  }
   function hud() {
     document.getElementById("hp").textContent = lives;
     document.getElementById("held").textContent = held;
     document.getElementById("ash").textContent = ash;
+    document.getElementById("keyn").textContent = invKeys;
+    document.getElementById("slotb").textContent = invFire ? "B HELLFIRE" : "B —";
+    document.getElementById("slotb").style.color = invFire ? "var(--fire)" : "var(--muted)";
   }
+  hud();
+  document.getElementById("mod").textContent = "Find the Pit Key. Open the east gate. Ash the bag at 0369.";
+  document.getElementById("seed").textContent = "";
+
   function resetRun() {
-    seed = todaySeed() + Math.floor(Math.random() * 99);
-    rooms = buildRun(seed);
-    roomId = "start";
+    rooms = buildDungeon();
+    roomId = "enter";
     room = rooms[roomId];
-    player.x = 2 * TILE; player.y = 5 * TILE; player.hurt = 0; player.facing = "right";
-    lastCardinal = "right"; lastFacing = "right"; walkAcc = 0;
-    shots = []; sparks = []; held = 0; invuln = pokeT = shootT = 0;
-    modId = pendingMod.id;
-    applyMod(modId);
-    rooms.loot.coins.push({ x: 6 * TILE + 8, y: 4 * TILE, v: 360, kind: "chest" });
-    document.getElementById("seed").textContent = "seed " + seed;
+    visited.clear(); visited.add("enter");
+    player.x = 6 * TILE; player.y = 8 * TILE; player.hurt = 0; player.facing = "up";
+    lastCardinal = "up"; lastFacing = "up"; walkAcc = 0;
+    shots = []; sparks = []; held = 0; lives = 3; invuln = pokeT = shootT = 0;
+    invKeys = 0; invFire = false; invMap = false;
+    magnet = false; heatMul = 1; valueMul = 1;
+    note("The Pit opens. North.");
     hud();
   }
   function showOverlay() {
@@ -246,16 +269,16 @@
     overlay.hidden = false;
     pads.classList.remove("on");
     if (phase === "ready") {
-      title.textContent = "THE PIT: DUNGEON";
-      blurb.textContent = "Collect supply. Jeets chase harder the more you hold. Walk the altar to ash it. Game score — not the token burn.";
+      title.textContent = "DUNGEON I";
+      blurb.textContent = "Trident is yours. Find the Pit Key, the Map, and Hellfire. Put down the Jeet King. Walk 0369 to ash the bag.";
       start.textContent = "Start run";
     } else if (phase === "dead") {
-      title.textContent = "JEETS TOOK THE RUN";
-      blurb.textContent = "Half the bag is gone. Ash bank stays. Try a greedier or safer run.";
+      title.textContent = "THE PIT TOOK YOU";
+      blurb.textContent = "Hearts empty. The rooms reset. Keys and orbs wait again.";
       start.textContent = "Again";
     } else if (phase === "burned") {
-      title.textContent = "BURNED " + lastBurn;
-      blurb.textContent = "That number is this run only. Dead bags don't come back — in the game either.";
+      title.textContent = "ASHED " + lastBurn;
+      blurb.textContent = "The altar took the run. Ash banks. The dungeon does not.";
       start.textContent = "Again";
     }
   }
@@ -294,18 +317,48 @@
     const cx = player.x + player.w / 2, cy = player.y + player.h / 2;
     const tx = Math.floor(cx / TILE), ty = Math.floor(cy / TILE);
     if (ty < 0 || tx < 0 || ty >= ROWS || tx >= COLS) return null;
-    if (room.map[ty][tx] !== 3) return null;
+    if (room.map[ty][tx] !== 3 && room.map[ty][tx] !== 4) return null;
     if (tx <= 0) return "left";
     if (tx >= COLS - 1) return "right";
     if (ty <= 0) return "up";
     if (ty >= ROWS - 1) return "down";
     return null;
   }
+  function unlockDoors(a, b, dir) {
+    const flip = { left: "right", right: "left", up: "down", down: "up" };
+    if (a.locked) a.locked[dir] = false;
+    if (b.locked) b.locked[flip[dir]] = false;
+    [a.map, b.map].forEach((m) => {
+      for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) if (m[y][x] === 4) m[y][x] = 3;
+    });
+  }
   function enter(dir) {
     const next = room.links[dir];
     if (!next) return;
+    const dest = rooms[next];
+    const back = { left: "right", right: "left", up: "down", down: "up" }[dir];
+    if ((room.locked && room.locked[dir]) || (dest.locked && dest.locked[back])) {
+      if (invKeys <= 0) {
+        note("Locked. Need a Pit Key.");
+        if (dir === "right") player.x -= 8;
+        if (dir === "left") player.x += 8;
+        if (dir === "down") player.y -= 8;
+        if (dir === "up") player.y += 8;
+        return;
+      }
+      invKeys -= 1;
+      unlockDoors(room, dest, dir);
+      note("The gate takes the key.");
+      hud();
+    }
+    if (next === "sanctum" && rooms.boss.jeets.some((j) => j.kind === "boss")) {
+      note("The Jeet King still stands.");
+      player.y += 8;
+      return;
+    }
     roomId = next;
     room = rooms[roomId];
+    visited.add(roomId);
     if (dir === "right") player.x = TILE + 4;
     if (dir === "left") player.x = (COLS - 2) * TILE - player.w;
     if (dir === "down") player.y = TILE + 4;
@@ -333,6 +386,7 @@
   }
   function shoot() {
     if (phase !== "play" || shootT > 0) return;
+    if (!invFire) { note("Hellfire is still sealed."); return; }
     shootT = 26;
     const d = vecFromFacing();
     shots.push({ x: player.x + player.w / 2, y: player.y + 12, vx: d.x * 7, vy: d.y * 7, life: 36 });
@@ -347,7 +401,6 @@
     held = Math.floor(held * (modId === "calm" ? 0.75 : 0.5));
     hud();
     if (lives <= 0) {
-      rollMod();
       phase = "dead";
       showOverlay();
     }
@@ -362,6 +415,7 @@
     if (invuln) invuln--;
     if (player.hurt) player.hurt--;
     if (shake) shake--;
+    if (toastT) toastT--;
 
     let mx = 0, my = 0;
     if (keys.has("KeyA") || keys.has("ArrowLeft")) mx -= 1;
@@ -410,10 +464,18 @@
       const d = vecFromFacing();
       const box = { x: player.x + player.w / 2 + d.x * 22 - 14, y: player.y + 10 + d.y * 18, w: 28, h: 24 };
       room.jeets = room.jeets.filter((j) => {
-        if (!aabb(box, j)) return true;
+        if (!aabb(box, j) || j.hurt > 0) return true;
+        j.hp -= 1; j.hurt = 10;
         burst(j.x + 16, j.y + 16, "#ff5a00");
-        held += Math.round(40 * valueMul);
-        shake = 6;
+        shake = 6; hitstop = 2;
+        const kb = vecFromFacing();
+        j.x += kb.x * 10; j.y += kb.y * 10;
+        if (j.hp > 0) return true;
+        held += Math.round((j.kind === "boss" ? 200 : 40) * valueMul);
+        if (j.kind === "boss") {
+          room.coins.push(loot("heart", 6, 5), loot("chest", 7, 6, 250));
+          note("The Jeet King falls. North is open.");
+        }
         hud();
         return false;
       });
@@ -425,16 +487,22 @@
       const box = { x: s.x - 8, y: s.y - 8, w: 16, h: 16 };
       let hit = false;
       room.jeets = room.jeets.filter((j) => {
-        if (!aabb(box, j)) return true;
-        hit = true;
+        if (!aabb(box, j) || j.hurt > 0) return true;
+        j.hp -= 1; j.hurt = 10; hit = true;
         burst(j.x + 16, j.y + 16, "#ff7a18");
-        held += Math.round(40 * valueMul);
+        if (j.hp > 0) return true;
+        held += Math.round((j.kind === "boss" ? 200 : 40) * valueMul);
+        if (j.kind === "boss") {
+          room.coins.push(loot("heart", 6, 5), loot("chest", 7, 6, 250));
+          note("The Jeet King falls. North is open.");
+        }
         hud();
         return false;
       });
       return !hit;
     });
 
+    room.jeets.forEach((j) => { if (j.hurt) j.hurt--; });
     const heat = 1 + (held / 700) * heatMul;
     room.jeets.forEach((j, i) => {
       const dx = player.x - j.x, dy = player.y - j.y, l = Math.hypot(dx, dy) || 1;
@@ -444,7 +512,7 @@
         const ox = j.x - o.x, oy = j.y - o.y, d = Math.hypot(ox, oy) || 1;
         if (d < 48) { sx += ox / d; sy += oy / d; }
       });
-      const spdJ = 62 * heat * dt;
+      const spdJ = (j.kind === "boss" ? 38 : 62) * heat * dt;
       j.vx = (dx / l) * spdJ + sx * 0.4;
       j.vy = (dy / l) * spdJ + sy * 0.4;
       const jx = j.x + j.vx, jy = j.y + j.vy;
@@ -455,15 +523,15 @@
     });
 
     room.coins = room.coins.filter((c) => {
-      if (magnet) {
-        const dx = player.x - c.x, dy = player.y - c.y, l = Math.hypot(dx, dy) || 1;
-        if (l < 140) { c.x += (dx / l) * 2.2; c.y += (dy / l) * 2.2; }
-      }
-      const box = { x: c.x, y: c.y, w: c.kind === "chest" ? 36 : 22, h: c.kind === "chest" ? 28 : 18 };
+      const box = { x: c.x, y: c.y, w: 28, h: 26 };
       if (!aabb(player, box)) return true;
-      held += Math.round(c.v * valueMul);
+      if (c.kind === "key") { invKeys += 1; note("Pit Key"); burst(c.x, c.y, "#e8c36a"); hud(); return false; }
+      if (c.kind === "hellfire") { invFire = true; note("Hellfire Orb — K to throw"); burst(c.x, c.y, "#ff5a00"); hud(); return false; }
+      if (c.kind === "map") { invMap = true; note("Map of the Pit"); burst(c.x, c.y, "#d4c4a8"); hud(); return false; }
+      if (c.kind === "heart") { lives = Math.min(6, lives + 1); note("Heart"); burst(c.x, c.y, "#e11d2e"); hud(); return false; }
+      held += Math.round((c.v || 40) * valueMul);
       burst(c.x, c.y, "#5cbf6a");
-      if (c.kind === "chest" && lives < 5) lives += 1;
+      if (c.kind === "chest" && lives < 6) lives += 1;
       hud();
       return false;
     });
@@ -478,7 +546,6 @@
         hud();
         phase = "burned";
         burst(altarBox.x + 20, altarBox.y, "#ff5a00");
-        rollMod();
         showOverlay();
       }
     }
@@ -549,6 +616,11 @@
             ctx.fillStyle = "rgba(255,90,0,0.28)";
             ctx.fillRect(dx, dy, TILE, TILE);
           }
+          if (t === 4) {
+            ctx.fillStyle = "rgba(90,70,20,0.85)";
+            ctx.fillRect(dx, dy, TILE, TILE);
+            sheetFrame(sheets.key, 2, 2, Math.floor(frame / 12) % 4, dx + 8, dy + 8, 32, 32);
+          }
         }
       }
     }
@@ -564,16 +636,30 @@
     }
 
     room.coins.forEach((c) => {
-      const img = c.kind === "chest" ? sheets.chest : sheets.coin;
-      if (ready(img)) ctx.drawImage(img, c.x, c.y, c.kind === "chest" ? 40 : 24, c.kind === "chest" ? 32 : 22);
+      const fi = Math.floor(frame / 10) % 4;
+      if (c.kind === "key") sheetFrame(sheets.key, 2, 2, fi, c.x, c.y, 32, 32);
+      else if (c.kind === "heart") sheetFrame(sheets.heart, 2, 2, fi, c.x, c.y, 28, 28);
+      else if (c.kind === "hellfire") sheetFrame(sheets.hellfire, 2, 2, fi, c.x, c.y, 32, 32);
+      else if (c.kind === "map") sheetFrame(sheets.map, 2, 2, fi, c.x, c.y, 34, 34);
+      else {
+        const img = c.kind === "chest" ? sheets.chest : sheets.coin;
+        if (ready(img)) ctx.drawImage(img, c.x, c.y, c.kind === "chest" ? 40 : 24, c.kind === "chest" ? 32 : 22);
+      }
     });
 
     room.jeets.forEach((j) => {
-      const img = j.kind === "suit" ? sheets.jeetS : sheets.jeetB;
+      const img = j.kind === "blue" ? sheets.jeetB : sheets.jeetS;
       const fi = Math.floor(frame / 8) % 4;
+      const dw = j.kind === "boss" ? 64 : 40, dh = j.kind === "boss" ? 70 : 44;
       if (j.hurt) ctx.filter = "brightness(2)";
-      sheetFrame(img, 2, 2, fi, j.x, j.y, 40, 44, j.facing === "left");
+      sheetFrame(img, 2, 2, fi, j.x, j.y, dw, dh, j.facing === "left");
       ctx.filter = "none";
+      if (j.kind === "boss") {
+        ctx.fillStyle = "#1a0a08";
+        ctx.fillRect(j.x, j.y - 8, dw, 4);
+        ctx.fillStyle = "#e11d2e";
+        ctx.fillRect(j.x, j.y - 8, (dw * j.hp) / j.maxHp, 4);
+      }
     });
 
     shots.forEach((s) => {
@@ -613,7 +699,26 @@
     });
     ctx.fillStyle = "#f3ece4";
     ctx.font = "10px ui-monospace, monospace";
-    ctx.fillText(roomId === "altar" ? "WALK INTO 0369 TO BURN" : roomId.toUpperCase(), 16, WORLD_H - 10);
+    ctx.fillText(room.altar ? "WALK THE ALTAR TO ASH THE BAG" : room.name.toUpperCase(), 16, WORLD_H - 10);
+    if (toastT > 0) {
+      ctx.fillStyle = "rgba(7,5,4,0.72)";
+      ctx.fillRect(WORLD_W / 2 - 130, 16, 260, 22);
+      ctx.fillStyle = "#ffb020";
+      ctx.textAlign = "center";
+      ctx.fillText(toastMsg.toUpperCase(), WORLD_W / 2, 31);
+      ctx.textAlign = "left";
+    }
+    if (invMap) {
+      const mx0 = WORLD_W - 78, my0 = 10;
+      ctx.fillStyle = "rgba(7,5,4,0.7)";
+      ctx.fillRect(mx0 - 4, my0 - 4, 70, 70);
+      Object.keys(rooms).forEach((id) => {
+        const r = rooms[id];
+        if (!visited.has(r.id) && r.id !== roomId) return;
+        ctx.fillStyle = r.id === roomId ? "#ff5a00" : "#6b3a28";
+        ctx.fillRect(mx0 + r.gx * 16, my0 + (3 - r.gy) * 16, 14, 14);
+      });
+    }
     ctx.restore();
   }
 
