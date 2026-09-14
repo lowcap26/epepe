@@ -2,23 +2,438 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>THE PIT — $EPEPE game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"/>
+<title>THE PIT 3D — $EPEPE</title>
 <link rel="icon" href="pepe.png"/>
-<meta property="og:type" content="website"/>
-<meta property="og:url" content="https://evilpepe.lol/dungeon.html"/>
-<meta property="og:title" content="THE PIT: DUNGEON — $EPEPE"/>
-<meta property="og:description" content="Collect supply. Walk the altar. Game score — not the token burn."/>
+<meta name="theme-color" content="#070504"/>
+<meta property="og:title" content="THE PIT 3D — $EPEPE"/>
+<meta property="og:description" content="Pitchfork. Hellfire. Jeet King. First person."/>
+<meta property="og:url" content="https://evilpepe.lol/pit.html"/>
 <meta property="og:image" content="https://evilpepe.lol/card.png"/>
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:site" content="@evilpepelol"/>
-<meta name="twitter:title" content="THE PIT: DUNGEON — $EPEPE"/>
-<meta name="twitter:description" content="Game score. Not the on-chain burn."/>
-<meta name="twitter:image" content="https://evilpepe.lol/card.png"/>
-<meta http-equiv="refresh" content="0;url=https://evilpepe.lol/dungeon.html"/>
-<script>location.replace("https://evilpepe.lol/dungeon.html");</script>
+<style>
+  :root { --bg:#070504; --fg:#f3ece4; --muted:#9a8b7c; --fire:#ff5a00; --ember:#e8a04a; --blood:#c43a2a; --border:#3a2a20; --surface:#110c09; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { margin:0; height:100%; background:var(--bg); color:var(--fg); font-family:ui-monospace,monospace; overflow:hidden; }
+  .wrap { display:flex; flex-direction:column; height:100dvh; }
+  header { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:8px 12px; border-bottom:1px solid var(--border); font-size:11px; letter-spacing:.16em; text-transform:uppercase; }
+  header a { color:var(--muted); text-decoration:none; }
+  .hud { display:flex; flex-wrap:wrap; gap:12px; color:var(--muted); }
+  .hud b { color:var(--fg); }
+  .hud .fire b { color:var(--fire); }
+  .stage { position:relative; flex:1; min-height:0; }
+  canvas { display:block; width:100%; height:100%; touch-action:none; }
+  .cross { pointer-events:none; position:absolute; left:50%; top:50%; width:16px; height:16px; transform:translate(-50%,-50%); }
+  .cross:before,.cross:after { content:""; position:absolute; background:var(--fire); }
+  .cross:before { left:7px; top:0; width:2px; height:16px; }
+  .cross:after { left:0; top:7px; width:16px; height:2px; }
+  .toast { pointer-events:none; position:absolute; inset:18px 0 auto; text-align:center; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--ember); }
+  .overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(7,5,4,.86); padding:24px; text-align:center; }
+  .overlay[hidden] { display:none; }
+  h1 { margin:8px 0 0; font-size:34px; letter-spacing:.04em; }
+  .kicker { color:var(--fire); font-size:11px; letter-spacing:.22em; text-transform:uppercase; margin:0; }
+  .blurb { color:var(--muted); font-size:14px; line-height:1.45; }
+  button.start { margin-top:16px; width:100%; min-height:44px; border:1px solid var(--fire); background:var(--fire); color:#1a0a00; font:700 14px/1 ui-monospace,monospace; letter-spacing:.16em; text-transform:uppercase; cursor:pointer; }
+  .keys { font-size:11px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; }
+  .pads { display:none; pointer-events:none; position:absolute; inset:auto 12px 12px; justify-content:space-between; align-items:flex-end; }
+  .pads.on { display:flex; }
+  .acts { pointer-events:auto; display:flex; gap:12px; }
+  .acts button { width:64px; height:64px; border-radius:50%; border:1px solid var(--border); font:700 10px/1 ui-monospace,monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--fg); cursor:pointer; }
+  .poke { background:var(--blood); }
+  .fire { background:var(--fire); color:#1a0a00; border-color:var(--fire); }
+</style>
 </head>
-<body style="background:#140303;color:#ffe7a0;font:700 18px sans-serif;padding:24px">
-THE PIT: DUNGEON is the game. <a href="https://evilpepe.lol/dungeon.html" style="color:#ff3b14">Play it</a>.
+<body>
+<div class="wrap">
+  <header>
+    <div>THE PIT: <span style="color:var(--fire)">3D</span></div>
+    <div class="hud">
+      <span>HP <b id="hp">100</b></span>
+      <span>A <b>FORK</b></span>
+      <span class="fire">B <b>HELLFIRE</b></span>
+      <span>KEY <b id="keyn">0</b></span>
+    </div>
+    <a href="./dungeon.html">Top-down</a>
+  </header>
+  <div class="stage" id="stage">
+    <div class="cross"></div>
+    <div class="toast" id="toast"></div>
+    <div class="overlay" id="overlay">
+      <div style="max-width:360px">
+        <p class="kicker">first person</p>
+        <h1 id="title">THE PIT 3D</h1>
+        <p class="blurb" id="blurb">Mouse looks. WASD moves. Left click / J stabs the pitchfork. Right click / K throws hellfire. Grab the Pit Key. Erase the Jeet King.</p>
+        <button class="start" id="start" type="button">Click to lock in</button>
+        <p class="keys">WASD · mouse · J poke · K fireball · Shift sprint</p>
+      </div>
+    </div>
+    <div class="pads" id="pads">
+      <div></div>
+      <div class="acts">
+        <button class="poke" id="poke" type="button">Poke</button>
+        <button class="fire" id="fire" type="button">Fire</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.170.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from "three";
+
+const CELL = 4, PLAYER_R = 0.42, EYE = 1.55, SPEED = 7.2, SENS = 0.0022;
+const LAYOUT = [
+  "################",
+  "#S.............#",
+  "#.........##...#",
+  "#..e......##.k.#",
+  "#..............#",
+  "####..##########",
+  "#........L.....#",
+  "#..e..........B#",
+  "#...........e..#",
+  "#..............#",
+  "################",
+];
+
+const stage = document.getElementById("stage");
+const overlay = document.getElementById("overlay");
+const pads = document.getElementById("pads");
+const toastEl = document.getElementById("toast");
+
+function loadTex(src) {
+  const t = new THREE.TextureLoader().load(src);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.magFilter = THREE.NearestFilter;
+  t.minFilter = THREE.NearestFilter;
+  return t;
+}
+function makePitchfork() {
+  const g = new THREE.Group();
+  const mat = (c) => new THREE.MeshBasicMaterial({ color: c });
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.034, 1.35, 8), mat(0xb42318));
+  shaft.rotation.x = Math.PI / 2; shaft.position.set(0, 0, -0.55);
+  const neck = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.05, 0.08), mat(0x8a1a12));
+  neck.position.set(0, 0.02, -1.18);
+  const tine = (x, ang) => {
+    const t = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.018, 0.34, 6), mat(0xff5a00));
+    t.rotation.x = Math.PI / 2 + ang; t.position.set(x, 0.03, -1.38);
+    const tip = new THREE.Mesh(new THREE.ConeGeometry(0.018, 0.08, 6), mat(0xffb020));
+    tip.rotation.x = Math.PI / 2; tip.position.set(x, 0.03, -1.58);
+    g.add(t, tip);
+  };
+  tine(0, 0); tine(-0.07, 0.18); tine(0.07, -0.18);
+  const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.04, 0.22, 8), mat(0x3a1510));
+  grip.rotation.x = Math.PI / 2; grip.position.set(0, 0, 0.08);
+  g.add(shaft, neck, grip);
+  g.position.set(0.28, -0.22, -0.5);
+  g.rotation.set(0.15, -0.18, -0.35);
+  return g;
+}
+
+const renderer = new THREE.WebGLRenderer({ antialias: false });
+renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.autoClear = false;
+stage.appendChild(renderer.domElement);
+renderer.domElement.style.cssText = "display:block;width:100%;height:100%;touch-action:none";
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x070504);
+scene.fog = new THREE.FogExp2(0x1a0a08, 0.045);
+const yaw = new THREE.Object3D();
+const camera = new THREE.PerspectiveCamera(78, 1, 0.08, 80);
+yaw.add(camera); scene.add(yaw);
+
+const gunCam = new THREE.PerspectiveCamera(78, 1, 0.05, 10);
+const gunScene = new THREE.Scene();
+gunScene.add(gunCam);
+const fork = makePitchfork();
+gunCam.add(fork);
+gunScene.add(new THREE.AmbientLight(0xffccaa, 1.6));
+const gunLight = new THREE.PointLight(0xff7a18, 0, 4);
+gunCam.add(gunLight);
+
+const wallTex = loadTex("game/wall.png"); wallTex.wrapS = wallTex.wrapT = THREE.RepeatWrapping;
+const floorTex = loadTex("game/floor.png"); floorTex.wrapS = floorTex.wrapT = THREE.RepeatWrapping; floorTex.repeat.set(18, 14);
+const jeetTex = loadTex("game/jeet-blue.png"); jeetTex.repeat.set(0.5, 0.5); jeetTex.offset.set(0, 0.5);
+const jeetSuit = loadTex("game/jeet-suit.png"); jeetSuit.repeat.set(0.5, 0.5); jeetSuit.offset.set(0, 0.5);
+const keyTex = loadTex("game/item-key.png"); keyTex.repeat.set(0.5, 0.5);
+const heartTex = loadTex("game/item-heart.png"); heartTex.repeat.set(0.5, 0.5);
+const fireTex = loadTex("game/fireball.png"); fireTex.repeat.set(0.5, 0.5); fireTex.offset.set(0, 0.5);
+const fireMat = new THREE.SpriteMaterial({ map: fireTex, transparent: true, depthWrite: false });
+
+scene.add(new THREE.AmbientLight(0xffaa77, 0.35));
+scene.add(new THREE.HemisphereLight(0xffc8a0, 0x1a0804, 0.55));
+const fill = new THREE.PointLight(0xff5a00, 18, 28); fill.position.set(8, 3.2, 8); scene.add(fill);
+
+const rows = LAYOUT.length, cols = LAYOUT[0].length;
+const solid = [], locked = [];
+let startX = 6, startZ = 6, doorMesh = null;
+const enemies = [], pickups = [], balls = [];
+const wallMat = new THREE.MeshStandardMaterial({ map: wallTex, roughness: 0.9 });
+const floorMat = new THREE.MeshStandardMaterial({ map: floorTex, roughness: 1 });
+const ceilMat = new THREE.MeshStandardMaterial({ color: 0x140a08, roughness: 1 });
+const doorMat = new THREE.MeshStandardMaterial({ color: 0x6b3a12, roughness: 0.6 });
+
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(cols * CELL, rows * CELL), floorMat);
+floor.rotation.x = -Math.PI / 2; floor.position.set(cols * CELL / 2, 0, rows * CELL / 2); scene.add(floor);
+const ceil = new THREE.Mesh(new THREE.PlaneGeometry(cols * CELL, rows * CELL), ceilMat);
+ceil.rotation.x = Math.PI / 2; ceil.position.set(cols * CELL / 2, 3.1, rows * CELL / 2); scene.add(ceil);
+
+function cellCenter(c, r) { return { x: (c + 0.5) * CELL, z: (r + 0.5) * CELL }; }
+for (let r = 0; r < rows; r++) {
+  solid[r] = []; locked[r] = [];
+  for (let c = 0; c < cols; c++) {
+    const ch = LAYOUT[r][c], { x, z } = cellCenter(c, r);
+    solid[r][c] = ch === "#" || ch === "L"; locked[r][c] = ch === "L";
+    if (ch === "#") {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(CELL, 3.1, CELL), wallMat);
+      m.position.set(x, 1.55, z); scene.add(m);
+    } else if (ch === "L") {
+      doorMesh = new THREE.Mesh(new THREE.BoxGeometry(CELL * 0.2, 2.6, CELL), doorMat);
+      doorMesh.position.set(x, 1.3, z); scene.add(doorMesh);
+    }
+    if (ch === "S") { startX = x; startZ = z; }
+    if (ch === "e" || ch === "B") {
+      const boss = ch === "B";
+      const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: boss ? jeetSuit : jeetTex, transparent: true }));
+      spr.scale.set(boss ? 2.4 : 1.5, boss ? 2.8 : 1.8, 1);
+      spr.position.set(x, boss ? 1.4 : 1.05, z); scene.add(spr);
+      enemies.push({ mesh: spr, x, z, hp: boss ? 14 : 4, hurt: 0, cd: 1, boss, alive: true });
+    }
+    if (ch === "k") {
+      const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: keyTex, transparent: true }));
+      spr.scale.set(0.7, 0.7, 1); spr.position.set(x, 0.7, z); scene.add(spr);
+      pickups.push({ mesh: spr, kind: "key", x, z, live: true });
+    }
+  }
+}
+{
+  const p = cellCenter(4, 2);
+  const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: heartTex, transparent: true }));
+  spr.scale.set(0.55, 0.55, 1); spr.position.set(p.x, 0.55, p.z); scene.add(spr);
+  pickups.push({ mesh: spr, kind: "heart", x: p.x, z: p.z, live: true });
+}
+
+yaw.position.set(startX, EYE, startZ);
+let lookYaw = Math.PI, lookPitch = 0, vx = 0, vz = 0;
+let hp = 100, keysHeld = 0, pokeCd = 0, fireCd = 0, invuln = 0, shake = 0, bob = 0, kick = 0, stab = 0, flash = 0;
+let toast = "", toastT = 0, phase = "ready";
+const held = new Set();
+let last = performance.now(), acc = 0;
+
+function note(msg) { toast = msg; toastT = 2.2; toastEl.textContent = msg; }
+function hud() {
+  document.getElementById("hp").textContent = Math.max(0, Math.ceil(hp));
+  document.getElementById("keyn").textContent = keysHeld;
+  toastEl.textContent = toastT > 0 ? toast : "";
+}
+function blocked(x, z) {
+  const pts = [[x-PLAYER_R,z-PLAYER_R],[x+PLAYER_R,z-PLAYER_R],[x-PLAYER_R,z+PLAYER_R],[x+PLAYER_R,z+PLAYER_R]];
+  return pts.some(([px,pz]) => {
+    const c = Math.floor(px / CELL), r = Math.floor(pz / CELL);
+    if (r < 0 || c < 0 || r >= rows || c >= cols) return true;
+    return solid[r][c];
+  });
+}
+function tryMove(dx, dz) {
+  const nx = yaw.position.x + dx, nz = yaw.position.z + dz;
+  if (!blocked(nx, yaw.position.z)) yaw.position.x = nx;
+  if (!blocked(yaw.position.x, nz)) yaw.position.z = nz;
+}
+function los(ax, az, bx, bz) {
+  for (let i = 1; i < 18; i++) {
+    const t = i / 18, x = ax + (bx-ax)*t, z = az + (bz-az)*t;
+    const c = Math.floor(x/CELL), r = Math.floor(z/CELL);
+    if (r < 0 || c < 0 || r >= rows || c >= cols || solid[r][c]) return false;
+  }
+  return true;
+}
+function hurtPlayer(n) {
+  if (invuln > 0 || phase !== "play") return;
+  hp -= n; invuln = 0.55; shake = 0.22; hud();
+  if (hp <= 0) { hp = 0; die("dead", "YOU GOT BAGGED", "Jeets don't miss forever. Click in and go again."); }
+}
+function die(p, title, blurb) {
+  phase = p;
+  document.exitPointerLock?.();
+  overlay.hidden = false; pads.classList.remove("on");
+  document.getElementById("title").textContent = title;
+  document.getElementById("blurb").textContent = blurb;
+  document.getElementById("start").textContent = "Again";
+}
+function killEnemy(e) {
+  e.alive = false; e.mesh.visible = false;
+  if (e.boss) die("win", "KING DOWN", "That's the run. The bag is yours.");
+}
+function hitEnemy(e, dmg, kx, kz) {
+  e.hp -= dmg; e.hurt = 0.14; e.x += kx; e.z += kz;
+  if (e.hp <= 0) killEnemy(e);
+}
+function poke() {
+  if (phase !== "play" || pokeCd > 0) return;
+  pokeCd = 0.34; stab = 0.18; shake = 0.05;
+  const origin = new THREE.Vector3(); camera.getWorldPosition(origin);
+  const fwd = new THREE.Vector3(); camera.getWorldDirection(fwd);
+  const flat = new THREE.Vector3(fwd.x, 0, fwd.z).normalize();
+  enemies.forEach((e) => {
+    if (!e.alive) return;
+    const to = new THREE.Vector3(e.x - origin.x, 0, e.z - origin.z);
+    const dist = to.length(); if (dist > 2.9 || dist < 0.05) return;
+    to.normalize(); if (to.dot(flat) < 0.45) return;
+    hitEnemy(e, 2, fwd.x * 0.7, fwd.z * 0.7);
+  });
+}
+function shoot() {
+  if (phase !== "play" || fireCd > 0) return;
+  fireCd = 0.38; kick = 0.14; gunLight.intensity = 14;
+  const origin = new THREE.Vector3(); camera.getWorldPosition(origin);
+  const fwd = new THREE.Vector3(); camera.getWorldDirection(fwd);
+  origin.addScaledVector(fwd, 0.55); origin.y -= 0.08;
+  const spr = new THREE.Sprite(fireMat.clone());
+  spr.scale.set(0.55, 0.55, 1); spr.position.copy(origin); scene.add(spr);
+  balls.push({ mesh: spr, x: origin.x, y: origin.y, z: origin.z, vx: fwd.x*18, vy: fwd.y*18, vz: fwd.z*18, life: 1.15 });
+}
+function unlockDoor() {
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) if (locked[r][c]) { locked[r][c] = false; solid[r][c] = false; }
+  if (doorMesh) { scene.remove(doorMesh); doorMesh = null; }
+  note("Gate blown. The King waits.");
+}
+
+function step(dt) {
+  if (phase !== "play") return;
+  if (invuln > 0) invuln -= dt;
+  if (fireCd > 0) fireCd -= dt;
+  if (pokeCd > 0) pokeCd -= dt;
+  if (shake > 0) shake -= dt;
+  if (kick > 0) kick -= dt * 2.4;
+  if (stab > 0) stab -= dt * 2.6;
+  else gunLight.intensity = Math.max(0, gunLight.intensity - dt * 40);
+  if (toastT > 0) { toastT -= dt; if (toastT <= 0) toast = ""; }
+
+  lookPitch = Math.max(-1.4, Math.min(1.4, lookPitch));
+  yaw.rotation.y = lookYaw; camera.rotation.x = lookPitch;
+  const forward = { x: -Math.sin(lookYaw), z: -Math.cos(lookYaw) };
+  const right = { x: Math.cos(lookYaw), z: -Math.sin(lookYaw) };
+  let mx = 0, mz = 0;
+  if (held.has("KeyW") || held.has("ArrowUp")) { mx += forward.x; mz += forward.z; }
+  if (held.has("KeyS") || held.has("ArrowDown")) { mx -= forward.x; mz -= forward.z; }
+  if (held.has("KeyD") || held.has("ArrowRight")) { mx += right.x; mz += right.z; }
+  if (held.has("KeyA") || held.has("ArrowLeft")) { mx -= right.x; mz -= right.z; }
+  const len = Math.hypot(mx, mz);
+  if (len > 1) { mx /= len; mz /= len; }
+  const sprint = (held.has("ShiftLeft") || held.has("ShiftRight")) ? 1.35 : 1;
+  tryMove(mx * SPEED * sprint * dt, mz * SPEED * sprint * dt);
+  vx = mx * SPEED; vz = mz * SPEED;
+  if (len > 0.12) bob += dt * 10;
+  yaw.position.y = EYE + (len > 0.12 ? Math.sin(bob) * 0.045 : 0);
+  const px = yaw.position.x, pz = yaw.position.z;
+
+  for (let i = balls.length - 1; i >= 0; i--) {
+    const b = balls[i];
+    const nx = b.x + b.vx * dt, ny = b.y + b.vy * dt, nz = b.z + b.vz * dt;
+    b.life -= dt;
+    const c = Math.floor(nx / CELL), r = Math.floor(nz / CELL);
+    let dead = b.life <= 0 || ny < 0.1 || ny > 2.8;
+    if (r < 0 || c < 0 || r >= rows || c >= cols || solid[r][c]) dead = true;
+    if (!dead) for (const e of enemies) {
+      if (e.alive && Math.hypot(e.x - nx, e.z - nz) < 0.85) { hitEnemy(e, 1, b.vx*0.02, b.vz*0.02); dead = true; break; }
+    }
+    if (dead) { scene.remove(b.mesh); balls.splice(i, 1); }
+    else { b.x = nx; b.y = ny; b.z = nz; b.mesh.position.set(nx, ny, nz); }
+  }
+
+  pickups.forEach((p) => {
+    if (!p.live || Math.hypot(p.x - px, p.z - pz) > 1.1) return;
+    p.live = false; p.mesh.visible = false;
+    if (p.kind === "key") { keysHeld += 1; note("Pit Key"); }
+    if (p.kind === "heart") { hp = Math.min(100, hp + 35); note("Heart"); }
+    hud();
+  });
+  if (keysHeld > 0 && doorMesh && Math.hypot(doorMesh.position.x - px, doorMesh.position.z - pz) < 2.1) {
+    keysHeld -= 1; unlockDoor(); hud();
+  }
+  enemies.forEach((e) => {
+    if (!e.alive) return;
+    if (e.hurt > 0) { e.hurt -= dt; e.mesh.material.color.set(e.hurt > 0 ? 0xff8866 : 0xffffff); }
+    const dx = px - e.x, dz = pz - e.z, dist = Math.hypot(dx, dz) || 1;
+    e.cd -= dt;
+    if (dist < 16 && los(e.x, e.z, px, pz)) {
+      const spd = (e.boss ? 2.1 : 2.8) * dt;
+      const nx = e.x + (dx/dist)*spd, nz = e.z + (dz/dist)*spd;
+      const c = Math.floor(nx/CELL), r = Math.floor(nz/CELL);
+      if (r>=0 && c>=0 && r<rows && c<cols && !solid[r][c]) { e.x = nx; e.z = nz; }
+      if (e.cd <= 0 && dist < 12 && los(e.x, e.z, px, pz)) { e.cd = e.boss ? 0.85 : 1.25; hurtPlayer(e.boss ? 14 : 8); }
+    }
+    e.mesh.position.set(e.x, e.boss ? 1.4 : 1.05, e.z);
+    if (dist < 0.95) hurtPlayer(e.boss ? 18 : 10);
+  });
+  hud();
+}
+
+function size() {
+  const w = stage.clientWidth || 390, h = stage.clientHeight || 640;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / Math.max(1, h); camera.updateProjectionMatrix();
+  gunCam.aspect = camera.aspect; gunCam.fov = camera.fov; gunCam.updateProjectionMatrix();
+}
+new ResizeObserver(size).observe(stage); size();
+
+function draw() {
+  fork.rotation.x = 0.15 - stab * 1.6 - kick * 0.4;
+  fork.position.set(0.28, -0.22 + kick * 0.12, -0.5 - stab * 0.55 - kick * 0.12);
+  renderer.clear(); renderer.render(scene, camera);
+  renderer.clearDepth(); renderer.render(gunScene, gunCam);
+}
+function loop(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  acc += dt; const STEP = 1/60;
+  while (acc >= STEP) { step(STEP); acc -= STEP; }
+  draw(); requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+function startPlay() {
+  if (phase === "dead" || phase === "win") { location.reload(); return; }
+  phase = "play"; overlay.hidden = true;
+  if (matchMedia("(max-width:800px)").matches || "ontouchstart" in window) pads.classList.add("on");
+  const el = renderer.domElement;
+  try {
+    const p = el.requestPointerLock({ unadjustedMovement: true });
+    if (p && p.catch) p.catch(() => el.requestPointerLock());
+  } catch { el.requestPointerLock(); }
+}
+document.getElementById("start").onclick = startPlay;
+window.addEventListener("mousemove", (e) => {
+  if (document.pointerLockElement !== renderer.domElement) return;
+  lookYaw -= e.movementX * SENS; lookPitch -= e.movementY * SENS;
+});
+window.addEventListener("keydown", (e) => {
+  held.add(e.code);
+  if (e.code === "KeyJ" || e.code === "Space") { e.preventDefault(); poke(); }
+  if (e.code === "KeyK" || e.code === "KeyF") { e.preventDefault(); shoot(); }
+  if (e.code === "Enter" && phase !== "play") startPlay();
+});
+window.addEventListener("keyup", (e) => held.delete(e.code));
+window.addEventListener("blur", () => held.clear());
+renderer.domElement.addEventListener("mousedown", (e) => {
+  if (phase !== "play") return;
+  if (e.button === 0) poke();
+  if (e.button === 2) shoot();
+});
+renderer.domElement.addEventListener("contextmenu", (e) => e.preventDefault());
+let tid = null, lx = 0, ly = 0;
+renderer.domElement.addEventListener("pointerdown", (e) => {
+  if (e.pointerType === "mouse") return;
+  tid = e.pointerId; lx = e.clientX; ly = e.clientY;
+});
+renderer.domElement.addEventListener("pointermove", (e) => {
+  if (tid !== e.pointerId) return;
+  lookYaw -= (e.clientX - lx) * 0.0045; lookPitch -= (e.clientY - ly) * 0.0045;
+  lx = e.clientX; ly = e.clientY;
+});
+renderer.domElement.addEventListener("pointerup", (e) => { if (tid === e.pointerId) tid = null; });
+document.getElementById("poke").onpointerdown = (e) => { e.preventDefault(); poke(); };
+document.getElementById("fire").onpointerdown = (e) => { e.preventDefault(); shoot(); };
+</script>
 </body>
 </html>
