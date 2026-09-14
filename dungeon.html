@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"/>
+<title>THE PIT: DUNGEON — $EPEPE</title>
+<link rel="icon" href="pepe.png"/>
+<meta name="theme-color" content="#070504"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://evilpepe.lol/dungeon.html"/>
+<meta property="og:title" content="THE PIT: DUNGEON — $EPEPE"/>
+<meta property="og:description" content="Collect supply. Jeets chase harder the more you hold. Walk the altar to ash it. Game score — not the token burn."/>
+<meta property="og:image" content="https://evilpepe.lol/card.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:site" content="@evilpepelol"/>
+<meta name="twitter:title" content="THE PIT: DUNGEON — $EPEPE"/>
+<meta name="twitter:description" content="Collect supply. Walk the altar. Game score — not the token burn."/>
+<meta name="twitter:image" content="https://evilpepe.lol/card.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@700&display=swap" rel="stylesheet"/>
+<style>
+  :root { --bg:#070504; --fg:#f3ece4; --muted:#9a8b7c; --fire:#ff5a00; --ember:#e8a04a; --acid:#5cbf6a; --blood:#c43a2a; --border:#3a2a20; --surface:#110c09; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font-family:"Comic Neue", system-ui, sans-serif; overflow:hidden; }
+  .wrap { display:flex; flex-direction:column; height:100dvh; min-height:100dvh; }
+  header, footer { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 12px; border-color:var(--border); font-size:11px; letter-spacing:.16em; text-transform:uppercase; }
+  header { border-bottom:1px solid var(--border); }
+  footer { border-top:1px solid var(--border); color:var(--muted); justify-content:center; text-align:center; }
+  header a { color:var(--muted); text-decoration:none; }
+  header a:hover { color:var(--fg); }
+  .hud { display:flex; gap:12px; color:var(--muted); }
+  .hud b { color:var(--fg); font-weight:700; }
+  .hud .ash b { color:var(--ember); }
+  .hud .sup b { color:var(--acid); }
+  .stage { position:relative; flex:1; min-height:0; background:#070504; }
+  canvas { display:block; width:100%; height:100%; touch-action:none; }
+  .overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(7,5,4,.82); padding:24px; text-align:center; }
+  .overlay[hidden] { display:none; }
+  .card { max-width:360px; }
+  .kicker { font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--fire); margin:0; }
+  h1 { font-family:Bangers, Impact, sans-serif; font-size:42px; letter-spacing:.02em; margin:8px 0 0; font-weight:400; }
+  .blurb { color:var(--muted); font-size:15px; line-height:1.45; margin:12px 0 0; }
+  .mod { margin:14px 0 0; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--ember); }
+  .seed { margin:4px 0 0; font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); }
+  button.start { margin-top:18px; width:100%; min-height:44px; border:1px solid var(--fire); background:var(--fire); color:#1a0a00; font-family:inherit; font-weight:700; letter-spacing:.18em; text-transform:uppercase; font-size:14px; cursor:pointer; }
+  .keys { margin:12px 0 0; font-size:11px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; }
+  .pads { pointer-events:none; position:absolute; inset:auto 12px 12px; display:none; align-items:flex-end; justify-content:space-between; }
+  .pads.on { display:flex; }
+  .stick { pointer-events:auto; width:120px; height:120px; border-radius:50%; border:1px solid var(--border); background:rgba(17,12,9,.8); position:relative; }
+  .knob { position:absolute; width:44px; height:44px; border-radius:50%; background:var(--fire); left:50%; top:50%; transform:translate(-50%,-50%); opacity:.85; }
+  .acts { pointer-events:auto; display:flex; gap:12px; }
+  .acts button { width:64px; height:64px; border-radius:50%; border:1px solid var(--border); font:700 10px/1 "Comic Neue", sans-serif; letter-spacing:.14em; text-transform:uppercase; color:var(--fg); cursor:pointer; }
+  .acts .poke { background:var(--blood); }
+  .acts .fire { background:var(--fire); color:#1a0a00; border-color:var(--fire); }
+  @media (max-width:800px) { .pads.on { display:flex; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>THE PIT: <span style="color:var(--fire)">DUNGEON</span></div>
+    <div class="hud">
+      <span>HP <b id="hp">3</b></span>
+      <span class="sup">SUPPLY <b id="held">0</b></span>
+      <span class="ash">ASH <b id="ash">0</b></span>
+    </div>
+    <a href="./">Site</a>
+  </header>
+  <div class="stage" id="stage">
+    <canvas id="c"></canvas>
+    <div class="overlay" id="overlay">
+      <div class="card">
+        <p class="kicker">0369 quest</p>
+        <h1 id="title">THE PIT: DUNGEON</h1>
+        <p class="blurb" id="blurb">Collect supply. Jeets chase harder the more you hold. Walk the altar to ash it. Game score — not the token burn.</p>
+        <p class="mod" id="mod"></p>
+        <p class="seed" id="seed"></p>
+        <button class="start" id="start" type="button">Start run</button>
+        <p class="keys">WASD move · J poke · K fireball</p>
+      </div>
+    </div>
+    <div class="pads" id="pads">
+      <div class="stick" id="stick"><div class="knob" id="knob"></div></div>
+      <div class="acts">
+        <button class="poke" id="poke" type="button">Poke</button>
+        <button class="fire" id="fire" type="button">Fire</button>
+      </div>
+    </div>
+  </div>
+  <footer>Game score. Not the $EPEPE token burn. @evilpepelol</footer>
+</div>
+<script>
+(function () {
+  const TILE = 48, COLS = 13, ROWS = 11, WORLD_W = COLS * TILE, WORLD_H = ROWS * TILE, STEP = 1 / 60;
+  const ASH_KEY = "epepe_dungeon_ash_v1";
+  const MOVE = new Set(["KeyW","KeyA","KeyS","KeyD","ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Space","KeyJ","KeyK","KeyF","Enter"]);
+  const MODS = [
+    { id: "heat", label: "Jeets smell the bag. They run hotter." },
+    { id: "greedy", label: "Chests pay double. Heat starts higher." },
+    { id: "thin", label: "One heart. Supply is worth 2×." },
+    { id: "magnet", label: "Bags slide toward you." },
+    { id: "calm", label: "Jeets are slow. You burn less per hit." },
+  ];
+
+  const canvas = document.getElementById("c");
+  const ctx = canvas.getContext("2d");
+  const overlay = document.getElementById("overlay");
+  const pads = document.getElementById("pads");
+  const stickEl = document.getElementById("stick");
+  const knob = document.getElementById("knob");
+  const pepe = new Image();
+  pepe.src = "pepe.png";
+
+  function todaySeed() {
+    const d = new Date();
+    return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  }
+  function mulberry(seed) {
+    let s = seed >>> 0;
+    return function () {
+      s = (s + 0x6d2b79f5) >>> 0;
+      let t = Math.imul(s ^ (s >>> 15), 1 | s);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function emptyMap() {
+    const m = [];
+    for (let y = 0; y < ROWS; y++) {
+      m[y] = [];
+      for (let x = 0; x < COLS; x++) m[y][x] = (x === 0 || y === 0 || x === COLS - 1 || y === ROWS - 1) ? 1 : 0;
+    }
+    return m;
+  }
+  function carveDoor(m, side) {
+    const mx = Math.floor(COLS / 2), my = Math.floor(ROWS / 2);
+    if (side === "left") { m[my][0] = 3; m[my - 1][0] = 3; }
+    if (side === "right") { m[my][COLS - 1] = 3; m[my - 1][COLS - 1] = 3; }
+    if (side === "up") { m[0][mx] = 3; m[0][mx - 1] = 3; }
+    if (side === "down") { m[ROWS - 1][mx] = 3; m[ROWS - 1][mx - 1] = 3; }
+  }
+  function coin(x, y, v) { return { x: x * TILE + 14, y: y * TILE + 14, v, kind: "coin" }; }
+  function jeet(x, y, kind, facing) {
+    return { x: x * TILE, y: y * TILE, w: 34, h: 38, vx: 0, vy: 0, facing: facing || "down", kind, hurt: 0 };
+  }
+  function buildRun(seed) {
+    const rng = mulberry(seed);
+    const start = emptyMap(), loot = emptyMap(), fight = emptyMap(), altar = emptyMap();
+    carveDoor(start, "right"); carveDoor(start, "up"); carveDoor(start, "down");
+    carveDoor(loot, "down"); carveDoor(fight, "up"); carveDoor(altar, "left");
+    [[3,4],[3,8],[7,5],[8,9]].forEach(([y,x]) => {
+      if (rng() > 0.35) fight[y][x] = 2;
+      if (rng() > 0.7) loot[y][x] = 2;
+    });
+    return {
+      start: { id: "start", map: start, coins: [coin(3,3,80), coin(9,7,80), coin(6,5,120)], jeets: [], links: { right: "altar", up: "loot", down: "fight" } },
+      loot: { id: "loot", map: loot, coins: [coin(4,4,150), coin(8,4,150)], jeets: [], links: { down: "start" } },
+      fight: { id: "fight", map: fight, coins: [coin(6,5,200)], jeets: [jeet(9,3,"blue"), jeet(3,7,"suit")], links: { up: "start" } },
+      altar: { id: "altar", map: altar, coins: [coin(4,8,80)], jeets: [jeet(8,3,"blue","left")], altar: true, links: { left: "start" } },
+    };
+  }
+  function aabb(a, b) {
+    return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+  }
+
+  let phase = "ready";
+  let seed = todaySeed();
+  let rooms = buildRun(seed);
+  let roomId = "start";
+  let room = rooms[roomId];
+  const player = { x: 2 * TILE, y: 5 * TILE, w: 28, h: 34, vx: 0, vy: 0, facing: "right", hurt: 0 };
+  let shots = [], sparks = [];
+  let held = 0, lives = 3, ash = 0, lastBurn = 0;
+  let invuln = 0, pokeT = 0, shootT = 0, shake = 0, hitstop = 0, frame = 0;
+  let magnet = false, heatMul = 1, valueMul = 1, modId = "heat";
+  let pendingMod = MODS[0];
+  const keys = new Set();
+  const stick = { x: 0, y: 0 };
+  let aimX = 1, aimY = 0;
+  let last = performance.now(), acc = 0, raf = 0, running = true;
+  let pointerId = null;
+
+  try { ash = Number(localStorage.getItem(ASH_KEY) || 0); } catch (e) {}
+  document.getElementById("ash").textContent = ash;
+
+  function rollMod() {
+    pendingMod = MODS[Math.floor(Math.random() * MODS.length)];
+    document.getElementById("mod").textContent = pendingMod.label;
+  }
+  rollMod();
+  document.getElementById("seed").textContent = "seed " + seed;
+
+  function applyMod(id) {
+    magnet = false; heatMul = 1; valueMul = 1; lives = 3;
+    if (id === "heat") heatMul = 1.35;
+    if (id === "greedy") { valueMul = 2; heatMul = 1.2; }
+    if (id === "thin") { lives = 1; valueMul = 2; }
+    if (id === "magnet") magnet = true;
+    if (id === "calm") heatMul = 0.7;
+    hud();
+  }
+  function hud() {
+    document.getElementById("hp").textContent = lives;
+    document.getElementById("held").textContent = held;
+    document.getElementById("ash").textContent = ash;
+  }
+  function resetRun() {
+    seed = todaySeed() + Math.floor(Math.random() * 99);
+    rooms = buildRun(seed);
+    roomId = "start";
+    room = rooms[roomId];
+    player.x = 2 * TILE; player.y = 5 * TILE; player.hurt = 0; player.facing = "right";
+    shots = []; sparks = []; held = 0; invuln = pokeT = shootT = 0;
+    modId = pendingMod.id;
+    applyMod(modId);
+    rooms.loot.coins.push({ x: 6 * TILE + 8, y: 4 * TILE, v: 360, kind: "chest" });
+    document.getElementById("seed").textContent = "seed " + seed;
+    hud();
+  }
+  function showOverlay() {
+    const title = document.getElementById("title");
+    const blurb = document.getElementById("blurb");
+    const start = document.getElementById("start");
+    overlay.hidden = false;
+    pads.classList.remove("on");
+    if (phase === "ready") {
+      title.textContent = "THE PIT: DUNGEON";
+      blurb.textContent = "Collect supply. Jeets chase harder the more you hold. Walk the altar to ash it. Game score — not the token burn.";
+      start.textContent = "Start run";
+    } else if (phase === "dead") {
+      title.textContent = "JEETS TOOK THE RUN";
+      blurb.textContent = "Half the bag is gone. Ash bank stays. Try a greedier or safer run.";
+      start.textContent = "Again";
+    } else if (phase === "burned") {
+      title.textContent = "BURNED " + lastBurn;
+      blurb.textContent = "That number is this run only. Dead bags don't come back — in the game either.";
+      start.textContent = "Again";
+    }
+  }
+  function startPlay() {
+    if (phase === "play") return;
+    resetRun();
+    phase = "play";
+    overlay.hidden = true;
+    if (window.matchMedia("(max-width: 800px)").matches || "ontouchstart" in window) pads.classList.add("on");
+  }
+
+  function size() {
+    const parent = canvas.parentElement;
+    const cssW = parent.clientWidth || 390;
+    const cssH = parent.clientHeight || 640;
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    canvas.style.width = cssW + "px";
+    canvas.style.height = cssH + "px";
+    canvas.width = Math.floor(cssW * dpr);
+    canvas.height = Math.floor(cssH * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  size();
+  new ResizeObserver(size).observe(canvas.parentElement);
+
+  function blocked(nx, ny, w, h) {
+    const pts = [[nx + 4, ny + 8], [nx + w - 4, ny + 8], [nx + 4, ny + h - 2], [nx + w - 4, ny + h - 2]];
+    return pts.some(([px, py]) => {
+      const tx = Math.floor(px / TILE), ty = Math.floor(py / TILE);
+      if (ty < 0 || tx < 0 || ty >= ROWS || tx >= COLS) return true;
+      const t = room.map[ty][tx];
+      return t === 1 || t === 2;
+    });
+  }
+  function doorSide() {
+    const cx = player.x + player.w / 2, cy = player.y + player.h / 2;
+    const tx = Math.floor(cx / TILE), ty = Math.floor(cy / TILE);
+    if (ty < 0 || tx < 0 || ty >= ROWS || tx >= COLS) return null;
+    if (room.map[ty][tx] !== 3) return null;
+    if (tx <= 0) return "left";
+    if (tx >= COLS - 1) return "right";
+    if (ty <= 0) return "up";
+    if (ty >= ROWS - 1) return "down";
+    return null;
+  }
+  function enter(dir) {
+    const next = room.links[dir];
+    if (!next) return;
+    roomId = next;
+    room = rooms[roomId];
+    if (dir === "right") player.x = TILE + 4;
+    if (dir === "left") player.x = (COLS - 2) * TILE - player.w;
+    if (dir === "down") player.y = TILE + 4;
+    if (dir === "up") player.y = (ROWS - 2) * TILE - player.h;
+  }
+  function burst(x, y, c) {
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2;
+      sparks.push({ x, y, vx: Math.cos(a) * 2.4, vy: Math.sin(a) * 2.4, life: 18, c });
+    }
+  }
+  function vecFromFacing() {
+    if (Math.abs(aimX) + Math.abs(aimY) > 0.2) {
+      const l = Math.hypot(aimX, aimY) || 1;
+      return { x: aimX / l, y: aimY / l };
+    }
+    if (player.facing === "left") return { x: -1, y: 0 };
+    if (player.facing === "up") return { x: 0, y: -1 };
+    if (player.facing === "down") return { x: 0, y: 1 };
+    return { x: 1, y: 0 };
+  }
+  function poke() {
+    if (phase !== "play" || pokeT > 0) return;
+    pokeT = 18;
+  }
+  function shoot() {
+    if (phase !== "play" || shootT > 0) return;
+    shootT = 26;
+    const d = vecFromFacing();
+    shots.push({ x: player.x + player.w / 2, y: player.y + 12, vx: d.x * 7, vy: d.y * 7, life: 36 });
+  }
+  function hitPlayer() {
+    if (invuln > 0) return;
+    lives -= 1;
+    invuln = 48;
+    player.hurt = 14;
+    shake = 10;
+    hitstop = 4;
+    held = Math.floor(held * (modId === "calm" ? 0.75 : 0.5));
+    hud();
+    if (lives <= 0) {
+      rollMod();
+      phase = "dead";
+      showOverlay();
+    }
+  }
+
+  function step(dt) {
+    if (phase !== "play") return;
+    if (hitstop > 0) { hitstop--; return; }
+    frame++;
+    if (pokeT) pokeT--;
+    if (shootT) shootT--;
+    if (invuln) invuln--;
+    if (player.hurt) player.hurt--;
+    if (shake) shake--;
+
+    let mx = 0, my = 0;
+    if (keys.has("KeyA") || keys.has("ArrowLeft")) mx -= 1;
+    if (keys.has("KeyD") || keys.has("ArrowRight")) mx += 1;
+    if (keys.has("KeyW") || keys.has("ArrowUp")) my -= 1;
+    if (keys.has("KeyS") || keys.has("ArrowDown")) my += 1;
+    mx += stick.x; my += stick.y;
+    const len = Math.hypot(mx, my);
+    if (len > 1) { mx /= len; my /= len; }
+    const spd = 138;
+    player.vx = mx * spd * dt;
+    player.vy = my * spd * dt;
+    const nx = player.x + player.vx, ny = player.y + player.vy;
+    if (!blocked(nx, player.y, player.w, player.h)) player.x = nx;
+    if (!blocked(player.x, ny, player.w, player.h)) player.y = ny;
+    if (Math.abs(mx) > 0.25 || Math.abs(my) > 0.25) {
+      if (Math.abs(mx) > Math.abs(my)) player.facing = mx < 0 ? "left" : "right";
+      else player.facing = my < 0 ? "up" : "down";
+      aimX = mx; aimY = my;
+    }
+    const side = doorSide();
+    if (side) enter(side);
+
+    if (pokeT > 8) {
+      const d = vecFromFacing();
+      const box = { x: player.x + player.w / 2 + d.x * 22 - 14, y: player.y + 10 + d.y * 18, w: 28, h: 24 };
+      room.jeets = room.jeets.filter((j) => {
+        if (!aabb(box, j)) return true;
+        burst(j.x + 16, j.y + 16, "#ff5a00");
+        held += Math.round(40 * valueMul);
+        shake = 6;
+        hud();
+        return false;
+      });
+    }
+
+    shots.forEach((s) => { s.x += s.vx; s.y += s.vy; s.life--; });
+    shots = shots.filter((s) => {
+      if (s.life <= 0) return false;
+      const box = { x: s.x - 8, y: s.y - 8, w: 16, h: 16 };
+      let hit = false;
+      room.jeets = room.jeets.filter((j) => {
+        if (!aabb(box, j)) return true;
+        hit = true;
+        burst(j.x + 16, j.y + 16, "#ff7a18");
+        held += Math.round(40 * valueMul);
+        hud();
+        return false;
+      });
+      return !hit;
+    });
+
+    const heat = 1 + (held / 700) * heatMul;
+    room.jeets.forEach((j, i) => {
+      const dx = player.x - j.x, dy = player.y - j.y, l = Math.hypot(dx, dy) || 1;
+      let sx = 0, sy = 0;
+      room.jeets.forEach((o, k) => {
+        if (k === i) return;
+        const ox = j.x - o.x, oy = j.y - o.y, d = Math.hypot(ox, oy) || 1;
+        if (d < 48) { sx += ox / d; sy += oy / d; }
+      });
+      const spdJ = 62 * heat * dt;
+      j.vx = (dx / l) * spdJ + sx * 0.4;
+      j.vy = (dy / l) * spdJ + sy * 0.4;
+      const jx = j.x + j.vx, jy = j.y + j.vy;
+      if (!blocked(jx, j.y, j.w, j.h)) j.x = jx;
+      if (!blocked(j.x, jy, j.w, j.h)) j.y = jy;
+      j.facing = dx < 0 ? "left" : "right";
+      if (aabb(player, j)) hitPlayer();
+    });
+
+    room.coins = room.coins.filter((c) => {
+      if (magnet) {
+        const dx = player.x - c.x, dy = player.y - c.y, l = Math.hypot(dx, dy) || 1;
+        if (l < 140) { c.x += (dx / l) * 2.2; c.y += (dy / l) * 2.2; }
+      }
+      const box = { x: c.x, y: c.y, w: c.kind === "chest" ? 36 : 22, h: c.kind === "chest" ? 28 : 18 };
+      if (!aabb(player, box)) return true;
+      held += Math.round(c.v * valueMul);
+      burst(c.x, c.y, "#5cbf6a");
+      if (c.kind === "chest" && lives < 5) lives += 1;
+      hud();
+      return false;
+    });
+
+    if (room.altar) {
+      const altarBox = { x: 9 * TILE, y: 4 * TILE, w: 40, h: 48 };
+      if (aabb(player, altarBox) && held > 0) {
+        lastBurn = held;
+        ash += held;
+        try { localStorage.setItem(ASH_KEY, String(ash)); } catch (e) {}
+        held = 0;
+        hud();
+        phase = "burned";
+        burst(altarBox.x + 20, altarBox.y, "#ff5a00");
+        rollMod();
+        showOverlay();
+      }
+    }
+
+    sparks.forEach((s) => { s.x += s.vx; s.y += s.vy; s.life--; });
+    sparks = sparks.filter((s) => s.life > 0);
+  }
+
+  function roundRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+  function drawBag(x, y) {
+    ctx.fillStyle = "#3d9b4a";
+    roundRect(x, y + 4, 20, 16, 3); ctx.fill();
+    ctx.fillStyle = "#2a6b34";
+    ctx.fillRect(x + 6, y, 8, 6);
+    ctx.fillStyle = "#ffe27a";
+    ctx.font = "bold 9px sans-serif";
+    ctx.fillText("$", x + 7, y + 16);
+  }
+  function drawChest(x, y) {
+    ctx.fillStyle = "#7a3b1a";
+    roundRect(x, y, 36, 26, 3); ctx.fill();
+    ctx.fillStyle = "#e8a04a";
+    ctx.fillRect(x + 2, y + 10, 32, 4);
+    ctx.fillStyle = "#ffe27a";
+    ctx.beginPath(); ctx.arc(x + 18, y + 12, 4, 0, 7); ctx.fill();
+  }
+  function drawJeet(j) {
+    const x = j.x, y = j.y;
+    if (j.kind === "suit") {
+      ctx.fillStyle = "#111";
+      roundRect(x + 6, y + 18, 22, 20, 3); ctx.fill();
+      ctx.fillStyle = "#eee";
+      ctx.fillRect(x + 14, y + 18, 6, 14);
+    } else {
+      ctx.fillStyle = "#2a5ca8";
+      roundRect(x + 6, y + 18, 22, 20, 3); ctx.fill();
+    }
+    ctx.fillStyle = "#6dbf4a";
+    ctx.beginPath(); ctx.ellipse(x + 17, y + 14, 13, 12, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = "#111";
+    ctx.fillRect(x + 10, y + 12, 4, 4);
+    ctx.fillRect(x + 20, y + 12, 4, 4);
+    ctx.fillStyle = "#c43a2a";
+    ctx.fillRect(x + 13, y + 18, 8, 2);
+  }
+  function drawPlayer() {
+    const x = player.x - 6, y = player.y - 10;
+    if (invuln % 6 < 3 || invuln === 0) {
+      if (pepe.complete && pepe.naturalWidth) {
+        ctx.save();
+        if (player.facing === "left") {
+          ctx.translate(x + 44, y);
+          ctx.scale(-1, 1);
+          ctx.drawImage(pepe, 0, 0, 44, 50);
+        } else {
+          ctx.drawImage(pepe, x, y, 44, 50);
+        }
+        ctx.restore();
+      } else {
+        ctx.fillStyle = "#ff2a1a";
+        ctx.beginPath(); ctx.ellipse(x + 22, y + 28, 14, 18, 0, 0, 7); ctx.fill();
+        ctx.fillStyle = "#6dbf4a";
+        ctx.beginPath(); ctx.ellipse(x + 22, y + 16, 16, 14, 0, 0, 7); ctx.fill();
+      }
+    }
+    if (pokeT > 8) {
+      const d = vecFromFacing();
+      ctx.fillStyle = "#ff5a00";
+      ctx.fillRect(player.x + player.w / 2 + d.x * 22 - 6, player.y + 12 + d.y * 16, 12, 12);
+    }
+  }
+  function draw() {
+    const wrap = canvas.parentElement;
+    const cssW = wrap.clientWidth || 390;
+    const cssH = wrap.clientHeight || 640;
+    const scale = Math.min(cssW / WORLD_W, cssH / WORLD_H);
+    const ox = (cssW - WORLD_W * scale) / 2 + (shake ? (Math.random() - 0.5) * shake : 0);
+    const oy = (cssH - WORLD_H * scale) / 2 + (shake ? (Math.random() - 0.5) * shake : 0);
+    ctx.fillStyle = "#070504";
+    ctx.fillRect(0, 0, cssW, cssH);
+    ctx.save();
+    ctx.translate(ox, oy);
+    ctx.scale(scale, scale);
+
+    for (let y = 0; y < ROWS; y++) {
+      for (let x = 0; x < COLS; x++) {
+        const t = room.map[y][x], dx = x * TILE, dy = y * TILE;
+        if (t === 1) {
+          ctx.fillStyle = "#4a1510";
+          ctx.fillRect(dx, dy, TILE, TILE);
+          ctx.fillStyle = "#2a0c0a";
+          ctx.fillRect(dx + 2, dy + 2, TILE - 4, TILE - 4);
+          ctx.strokeStyle = "#6b2218";
+          ctx.strokeRect(dx + 6, dy + 8, TILE - 12, 8);
+        } else if (t === 2) {
+          ctx.fillStyle = "#0a0608";
+          ctx.fillRect(dx, dy, TILE, TILE);
+          ctx.fillStyle = "#6b21a8";
+          ctx.beginPath(); ctx.ellipse(dx + 24, dy + 28, 14, 10, 0, 0, 7); ctx.fill();
+        } else {
+          ctx.fillStyle = (x + y) % 2 ? "#2a1814" : "#231410";
+          ctx.fillRect(dx, dy, TILE, TILE);
+          if (t === 3) {
+            ctx.fillStyle = "rgba(255,90,0,0.28)";
+            ctx.fillRect(dx, dy, TILE, TILE);
+          }
+        }
+      }
+    }
+
+    if (room.altar) {
+      const ax = 9 * TILE, ay = 4 * TILE;
+      ctx.fillStyle = "#3f3f46";
+      ctx.fillRect(ax, ay + 10, 40, 38);
+      ctx.fillStyle = "#ff7a18";
+      ctx.beginPath();
+      ctx.moveTo(ax + 8, ay + 14);
+      ctx.lineTo(ax + 20, ay - 16 - Math.sin(frame / 6) * 4);
+      ctx.lineTo(ax + 32, ay + 14);
+      ctx.fill();
+      ctx.fillStyle = "#ffe27a";
+      ctx.beginPath();
+      ctx.moveTo(ax + 14, ay + 12);
+      ctx.lineTo(ax + 20, ay - 6);
+      ctx.lineTo(ax + 26, ay + 12);
+      ctx.fill();
+      ctx.fillStyle = "#f3ece4";
+      ctx.font = "9px ui-monospace, monospace";
+      ctx.fillText("0369", ax + 6, ay + 34);
+    }
+
+    room.coins.forEach((c) => c.kind === "chest" ? drawChest(c.x, c.y) : drawBag(c.x, c.y));
+    room.jeets.forEach(drawJeet);
+    shots.forEach((s) => {
+      ctx.fillStyle = "#ff7a18";
+      ctx.beginPath(); ctx.arc(s.x, s.y, 7, 0, 7); ctx.fill();
+      ctx.fillStyle = "#ffe27a";
+      ctx.beginPath(); ctx.arc(s.x, s.y, 3, 0, 7); ctx.fill();
+    });
+    drawPlayer();
+    sparks.forEach((s) => {
+      ctx.globalAlpha = s.life / 18;
+      ctx.fillStyle = s.c;
+      ctx.fillRect(s.x, s.y, 3, 3);
+      ctx.globalAlpha = 1;
+    });
+    ctx.fillStyle = "#f3ece4";
+    ctx.font = "10px ui-monospace, monospace";
+    ctx.fillText(roomId === "altar" ? "WALK INTO 0369 TO BURN" : roomId.toUpperCase(), 16, WORLD_H - 10);
+    ctx.restore();
+  }
+
+  function loop(now) {
+    if (!running) return;
+    const raw = Math.min(0.1, (now - last) / 1000);
+    last = now;
+    acc += raw;
+    while (acc >= STEP) { step(STEP); acc -= STEP; }
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+  raf = requestAnimationFrame(loop);
+
+  function onKey(e, down) {
+    if (MOVE.has(e.code)) e.preventDefault();
+    if (e.repeat && (e.code === "KeyJ" || e.code === "KeyK" || e.code === "Space" || e.code === "Enter")) return;
+    if (down) keys.add(e.code); else keys.delete(e.code);
+    if (down && (e.code === "KeyJ" || e.code === "Space")) poke();
+    if (down && (e.code === "KeyK" || e.code === "KeyF")) shoot();
+    if (down && e.code === "Enter" && phase !== "play") startPlay();
+  }
+  window.addEventListener("keydown", (e) => onKey(e, true));
+  window.addEventListener("keyup", (e) => onKey(e, false));
+  window.addEventListener("blur", () => keys.clear());
+
+  function setStick(clientX, clientY) {
+    const r = stickEl.getBoundingClientRect();
+    let x = ((clientX - r.left) / r.width) * 2 - 1;
+    let y = ((clientY - r.top) / r.height) * 2 - 1;
+    const m = Math.hypot(x, y);
+    if (m > 1) { x /= m; y /= m; }
+    if (m < 0.18) { stick.x = 0; stick.y = 0; knob.style.transform = "translate(-50%,-50%)"; return; }
+    stick.x = x; stick.y = y;
+    knob.style.transform = "translate(calc(-50% + " + (x * 28) + "px), calc(-50% + " + (y * 28) + "px))";
+  }
+  stickEl.addEventListener("pointerdown", (e) => {
+    pointerId = e.pointerId;
+    stickEl.setPointerCapture(e.pointerId);
+    setStick(e.clientX, e.clientY);
+  });
+  stickEl.addEventListener("pointermove", (e) => {
+    if (pointerId !== e.pointerId) return;
+    setStick(e.clientX, e.clientY);
+  });
+  function stickUp(e) {
+    if (pointerId !== e.pointerId) return;
+    pointerId = null; stick.x = 0; stick.y = 0;
+    knob.style.transform = "translate(-50%,-50%)";
+  }
+  stickEl.addEventListener("pointerup", stickUp);
+  stickEl.addEventListener("pointercancel", stickUp);
+  document.getElementById("poke").addEventListener("pointerdown", (e) => { e.preventDefault(); poke(); });
+  document.getElementById("fire").addEventListener("pointerdown", (e) => { e.preventDefault(); shoot(); });
+  document.getElementById("start").addEventListener("click", startPlay);
+})();
+</script>
+</body>
+</html>
