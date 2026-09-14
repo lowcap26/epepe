@@ -93,7 +93,7 @@
 <script>
 (function () {
   const TILE = 48, COLS = 13, ROWS = 11, WORLD_W = COLS * TILE, WORLD_H = ROWS * TILE, STEP = 1 / 60;
-  const STEP_PX = 2;
+  const STEP_PX = 3;
   const ASH_KEY = "epepe_dungeon_ash_v1";
   const MOVE = new Set(["KeyW","KeyA","KeyS","KeyD","ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Space","KeyJ","KeyK","KeyF","Enter"]);
   const MODS = [
@@ -116,10 +116,10 @@
     return img;
   }
   const sheets = {
-    idle: loadImg("game/player-idle.png?v=4"),
-    walk: loadImg("game/player-walk.png?v=4"),
-    attack: loadImg("game/player-attack.png?v=4"),
-    shoot: loadImg("game/player-shoot.png?v=4"),
+    idle: loadImg("game/player-idle.png?v=5"),
+    walk: loadImg("game/player-walk.png?v=5"),
+    attack: loadImg("game/player-attack.png?v=5"),
+    shoot: loadImg("game/player-shoot.png?v=5"),
     jeetB: loadImg("game/jeet-blue.png?v=4"),
     jeetS: loadImg("game/jeet-suit.png?v=4"),
     fire: loadImg("game/fireball.png?v=4"),
@@ -196,6 +196,7 @@
   const keys = new Set();
   const stick = { x: 0, y: 0 };
   let lastCardinal = "right";
+  let walkAcc = 0, lastFacing = "right", dustCool = 0;
   let aimX = 1, aimY = 0;
   let last = performance.now(), acc = 0, raf = 0, running = true;
   let pointerId = null;
@@ -230,7 +231,7 @@
     roomId = "start";
     room = rooms[roomId];
     player.x = 2 * TILE; player.y = 5 * TILE; player.hurt = 0; player.facing = "right";
-    lastCardinal = "right";
+    lastCardinal = "right"; lastFacing = "right"; walkAcc = 0;
     shots = []; sparks = []; held = 0; invuln = pokeT = shootT = 0;
     modId = pendingMod.id;
     applyMod(modId);
@@ -376,17 +377,31 @@
       } else if (Math.abs(mx) >= Math.abs(my)) desired = mx < 0 ? "left" : "right";
       else desired = my < 0 ? "up" : "down";
     }
+    if (dustCool) dustCool--;
     player.vx = 0; player.vy = 0;
     if (desired) {
+      if (desired !== lastFacing) walkAcc = 0;
       lastCardinal = desired;
+      lastFacing = desired;
       player.facing = desired;
       const dx = desired === "left" ? -1 : desired === "right" ? 1 : 0;
       const dy = desired === "up" ? -1 : desired === "down" ? 1 : 0;
+      const prevX = player.x, prevY = player.y;
       const nx = player.x + dx * STEP_PX, ny = player.y + dy * STEP_PX;
       if (!blocked(nx, player.y, player.w, player.h)) player.x = nx;
       if (!blocked(player.x, ny, player.w, player.h)) player.y = ny;
-      player.vx = dx * STEP_PX; player.vy = dy * STEP_PX;
+      const moved = Math.abs(player.x - prevX) + Math.abs(player.y - prevY);
+      if (moved > 0) {
+        walkAcc += moved;
+        player.vx = dx * STEP_PX; player.vy = dy * STEP_PX;
+        if ((Math.floor(walkAcc / 12) % 2) === 1 && dustCool <= 0) {
+          sparks.push({ x: player.x + player.w / 2 + (Math.random() * 6 - 3), y: player.y + player.h - 2, vx: -dx * 0.4, vy: 0.4, life: 10, c: "#6b4a32" });
+          dustCool = 9;
+        }
+      }
       aimX = dx; aimY = dy;
+    } else {
+      walkAcc = 0;
     }
     const side = doorSide();
     if (side) enter(side);
@@ -567,21 +582,23 @@
 
     const moving = Math.hypot(player.vx, player.vy) > 0.4;
     const flip = player.facing === "left";
-    let img = sheets.idle, cols = 2, rows = 2, fi = Math.floor(frame / 10) % 4;
+    let img = sheets.idle, cols = 2, rows = 2, fi = Math.floor(frame / 16) % 4, bob = 0;
     if (pokeT > 0) {
       img = sheets.attack;
-      fi = pokeT > 12 ? 0 : pokeT > 6 ? 1 : 2;
-    } else if (shootT > 16) {
+      fi = pokeT > 14 ? 0 : pokeT > 10 ? 1 : pokeT > 5 ? 2 : 3;
+    } else if (shootT > 0) {
       img = sheets.shoot;
-      fi = 1;
+      fi = shootT > 20 ? 0 : shootT > 14 ? 1 : shootT > 8 ? 2 : 3;
     } else if (moving) {
       img = sheets.walk;
       cols = 4; rows = 4;
       const row = player.facing === "down" ? 0 : player.facing === "left" ? 1 : player.facing === "right" ? 2 : 3;
-      fi = row * 4 + (Math.floor(frame / 8) % 4);
+      const step = Math.floor(walkAcc / 12) % 4;
+      fi = row * 4 + step;
+      bob = step % 2 === 1 ? -2 : 0;
     }
     if (invuln % 6 < 3 || invuln === 0) {
-      sheetFrame(img, cols, rows, fi, Math.round(player.x) - 6, Math.round(player.y) - 10, 40, 44, flip && img !== sheets.walk);
+      sheetFrame(img, cols, rows, fi, Math.round(player.x) - 8, Math.round(player.y) - 12 + bob, 48, 52, flip && img !== sheets.walk);
     }
 
     sparks.forEach((s) => {
