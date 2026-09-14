@@ -93,7 +93,7 @@
 <script>
 (function () {
   const TILE = 48, COLS = 13, ROWS = 11, WORLD_W = COLS * TILE, WORLD_H = ROWS * TILE, STEP = 1 / 60;
-  const GRID = 8, STEP_PX = 2;
+  const STEP_PX = 2;
   const ASH_KEY = "epepe_dungeon_ash_v1";
   const MOVE = new Set(["KeyW","KeyA","KeyS","KeyD","ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Space","KeyJ","KeyK","KeyF","Enter"]);
   const MODS = [
@@ -116,16 +116,16 @@
     return img;
   }
   const sheets = {
-    idle: loadImg("game/player-idle.png"),
-    walk: loadImg("game/player-walk.png"),
-    attack: loadImg("game/player-attack.png"),
-    shoot: loadImg("game/player-shoot.png"),
-    jeetB: loadImg("game/jeet-blue.png"),
-    jeetS: loadImg("game/jeet-suit.png"),
-    fire: loadImg("game/fireball.png"),
-    coin: loadImg("game/coin.png"),
-    chest: loadImg("game/chest.png"),
-    altar: loadImg("game/altar.png"),
+    idle: loadImg("game/player-idle.png?v=4"),
+    walk: loadImg("game/player-walk.png?v=4"),
+    attack: loadImg("game/player-attack.png?v=4"),
+    shoot: loadImg("game/player-shoot.png?v=4"),
+    jeetB: loadImg("game/jeet-blue.png?v=4"),
+    jeetS: loadImg("game/jeet-suit.png?v=4"),
+    fire: loadImg("game/fireball.png?v=4"),
+    coin: loadImg("game/coin.png?v=4"),
+    chest: loadImg("game/chest.png?v=4"),
+    altar: loadImg("game/altar.png?v=4"),
     floor: loadImg("game/floor.png"),
     wall: loadImg("game/wall.png"),
   };
@@ -196,7 +196,6 @@
   const keys = new Set();
   const stick = { x: 0, y: 0 };
   let lastCardinal = "right";
-  let moveDir = "right";
   let aimX = 1, aimY = 0;
   let last = performance.now(), acc = 0, raf = 0, running = true;
   let pointerId = null;
@@ -231,6 +230,7 @@
     roomId = "start";
     room = rooms[roomId];
     player.x = 2 * TILE; player.y = 5 * TILE; player.hurt = 0; player.facing = "right";
+    lastCardinal = "right";
     shots = []; sparks = []; held = 0; invuln = pokeT = shootT = 0;
     modId = pendingMod.id;
     applyMod(modId);
@@ -367,48 +367,26 @@
     if (keys.has("KeyD") || keys.has("ArrowRight")) mx += 1;
     if (keys.has("KeyW") || keys.has("ArrowUp")) my -= 1;
     if (keys.has("KeyS") || keys.has("ArrowDown")) my += 1;
-    if (stick.x < -0.4) mx -= 1;
-    if (stick.x > 0.4) mx += 1;
-    if (stick.y < -0.4) my -= 1;
-    if (stick.y > 0.4) my += 1;
-    const held = [];
-    if (mx < 0) held.push("left");
-    if (mx > 0) held.push("right");
-    if (my < 0) held.push("up");
-    if (my > 0) held.push("down");
-    if (Math.abs(stick.x) > 0.4 || Math.abs(stick.y) > 0.4) {
-      lastCardinal = Math.abs(stick.x) >= Math.abs(stick.y) ? (stick.x < 0 ? "left" : "right") : (stick.y < 0 ? "up" : "down");
-    }
+    mx += stick.x; my += stick.y;
     let desired = null;
-    if (held.length) desired = held.includes(lastCardinal) ? lastCardinal : held[0];
+    if (Math.abs(mx) >= 0.2 || Math.abs(my) >= 0.2) {
+      if (Math.abs(mx) >= 0.2 && Math.abs(my) >= 0.2) {
+        if (lastCardinal === "left" || lastCardinal === "right") desired = mx < 0 ? "left" : "right";
+        else desired = my < 0 ? "up" : "down";
+      } else if (Math.abs(mx) >= Math.abs(my)) desired = mx < 0 ? "left" : "right";
+      else desired = my < 0 ? "up" : "down";
+    }
     player.vx = 0; player.vy = 0;
     if (desired) {
-      if (desired !== moveDir) {
-        const horiz = moveDir === "left" || moveDir === "right";
-        const rem = horiz
-          ? ((Math.round(player.y) % GRID) + GRID) % GRID
-          : ((Math.round(player.x) % GRID) + GRID) % GRID;
-        if (rem === 0) moveDir = desired;
-      }
-      const dx = moveDir === "left" ? -1 : moveDir === "right" ? 1 : 0;
-      const dy = moveDir === "up" ? -1 : moveDir === "down" ? 1 : 0;
-      const nx = player.x + dx * STEP_PX;
-      const ny = player.y + dy * STEP_PX;
-      if (!blocked(nx, ny, player.w, player.h)) {
-        player.x = Math.round(nx); player.y = Math.round(ny);
-        player.vx = dx * STEP_PX; player.vy = dy * STEP_PX;
-        player.facing = moveDir; aimX = dx; aimY = dy;
-      } else if (desired !== moveDir) {
-        const rdx = desired === "left" ? -1 : desired === "right" ? 1 : 0;
-        const rdy = desired === "up" ? -1 : desired === "down" ? 1 : 0;
-        const rx = player.x + rdx * STEP_PX, ry = player.y + rdy * STEP_PX;
-        if (!blocked(rx, ry, player.w, player.h)) {
-          moveDir = desired;
-          player.x = Math.round(rx); player.y = Math.round(ry);
-          player.vx = rdx * STEP_PX; player.vy = rdy * STEP_PX;
-          player.facing = moveDir; aimX = rdx; aimY = rdy;
-        }
-      }
+      lastCardinal = desired;
+      player.facing = desired;
+      const dx = desired === "left" ? -1 : desired === "right" ? 1 : 0;
+      const dy = desired === "up" ? -1 : desired === "down" ? 1 : 0;
+      const nx = player.x + dx * STEP_PX, ny = player.y + dy * STEP_PX;
+      if (!blocked(nx, player.y, player.w, player.h)) player.x = nx;
+      if (!blocked(player.x, ny, player.w, player.h)) player.y = ny;
+      player.vx = dx * STEP_PX; player.vy = dy * STEP_PX;
+      aimX = dx; aimY = dy;
     }
     const side = doorSide();
     if (side) enter(side);
@@ -600,7 +578,7 @@
       img = sheets.walk;
       cols = 4; rows = 4;
       const row = player.facing === "down" ? 0 : player.facing === "left" ? 1 : player.facing === "right" ? 2 : 3;
-      fi = row * 4 + (Math.floor(frame / 10) % 2) * 2;
+      fi = row * 4 + (Math.floor(frame / 8) % 4);
     }
     if (invuln % 6 < 3 || invuln === 0) {
       sheetFrame(img, cols, rows, fi, Math.round(player.x) - 6, Math.round(player.y) - 10, 40, 44, flip && img !== sheets.walk);
@@ -642,6 +620,7 @@
     if (down && (e.code === "KeyJ" || e.code === "Space")) poke();
     if (down && (e.code === "KeyK" || e.code === "KeyF")) shoot();
     if (down && e.code === "Enter" && phase !== "play") startPlay();
+    if (down && phase !== "play" && (e.code === "KeyW" || e.code === "KeyA" || e.code === "KeyS" || e.code === "KeyD")) startPlay();
   }
   window.addEventListener("keydown", (e) => onKey(e, true));
   window.addEventListener("keyup", (e) => onKey(e, false));
